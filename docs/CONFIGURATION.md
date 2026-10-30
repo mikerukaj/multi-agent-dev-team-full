@@ -42,7 +42,7 @@ options override the matching variables for one run.
 | `PRICE_TABLE_PATH` | `cost/prices.json` | Price table |
 | `COST_REPORT_DIR` | `docs/cost_reports` | Cost report folder |
 | `LOG_LEVEL` | `info` | Lowest event severity written: `debug`, `info`, `warning`, `error` |
-| `RETRY_*`, `CIRCUIT_*`, `LLM_RESPONSE_CACHE_*` | see [Reliability](../README.md#reliability-retries-circuit-breakers-and-graceful-degradation) | Retries, circuit breakers, degraded-response cache |
+| `RETRY_*`, `CIRCUIT_*`, `LLM_RESPONSE_CACHE_*` | see [Reliability](RELIABILITY.md#retries-circuit-breakers-and-graceful-degradation) | Retries, circuit breakers, degraded-response cache |
 | `LANGSMITH_TRACING`, `LANGSMITH_API_KEY`, `LANGSMITH_PROJECT`, `LANGSMITH_ENDPOINT` | off | LangSmith tracing |
 | `CHROMA_HOST`, `CHROMA_PORT` | unset, `8000` | Use a Chroma server instead of the embedded `CODER_CHROMA_PATH` |
 | `QA_OUTPUT_ROOT` | system temp | Where QA's JUnit folder is created (a host path under Compose) |
