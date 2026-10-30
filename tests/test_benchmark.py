@@ -11,16 +11,19 @@ import io
 import json
 import tempfile
 import unittest
+import unittest.mock
 from pathlib import Path
 
 from benchmarks.run_benchmark import (
     BENCHMARK_FILE,
+    REPO_ROOT,
     baseline_lines,
     cost_totals,
     fingerprint,
     load_benchmark,
     main,
     record_for,
+    run_configuration,
     score,
 )
 from tests.team_fakes import scripted_test_run
@@ -39,7 +42,7 @@ def final_state(status: str = "completed", runs=(), end_reason: str = "complete"
     ]
     return {"run_id": "r", "status": status, "end_reason": end_reason, "error": None,
             "iterations": iterations, "usage": {"input_tokens": 10, "output_tokens": 5},
-            "cost_usd": 0.12}
+            "cost_usd": 0.12, "workspace": "workspace/benchmark-x/r"}
 
 
 def record(succeeded: bool, first_failed, duration: float = 60.0) -> dict:
@@ -183,7 +186,9 @@ class FakeRuns:
         return final_state(status, runs, "iteration_limit" if outcome == "fail" else "complete")
 
 
-class MainTests(unittest.TestCase):
+class RunnerHarness(unittest.TestCase):
+    """Runs ``main`` against fakes into a temporary results folder (holds no tests)."""
+
     def setUp(self) -> None:
         self._tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self._tmp.cleanup)
@@ -198,6 +203,9 @@ class MainTests(unittest.TestCase):
 
     def results(self) -> list[dict]:
         return [json.loads(p.read_text(encoding="utf-8")) for p in sorted(self.out.glob("*.json"))]
+
+
+class MainTests(RunnerHarness):
 
     def test_full_run_writes_results_and_exits_0_when_both_criteria_are_met(self) -> None:
         fake = FakeRuns({1: "recover", 2: RuntimeError("Docker went away")})
@@ -254,6 +262,61 @@ class MainTests(unittest.TestCase):
         _, err = self.run_main(["--only", "stats"], FakeRuns({}))
         self.assertIn(f"benchmark set changed since {earlier.name}", err)
         self.assertIn("not comparable", err)
+
+
+E2E_FILE = REPO_ROOT / "benchmarks" / "e2e_tasks.json"
+
+
+class RequirementsFileTests(RunnerHarness):
+    """``--requirements`` and ``--label`` run other task files, such as the E2E tasks."""
+
+    def test_the_e2e_file_has_one_task_of_each_kind(self) -> None:
+        items = load_benchmark(E2E_FILE, fixed_size=False)["requirements"]
+        self.assertEqual([item["id"] for item in items],
+                         ["slugify-cli", "isbn-check", "lru-cache"])
+        self.assertEqual({item["kind"] for item in items}, {"cli", "library", "stateful"})
+
+    def test_a_three_task_file_runs_and_is_reported_but_not_scored(self) -> None:
+        fake = FakeRuns({2: "fail"})
+        code, _ = self.run_main(["--requirements", str(E2E_FILE), "--label", "e2e-before"],
+                                fake)
+        self.assertEqual(code, 0)
+        self.assertEqual(len(fake.requirements), 3)
+        (path,) = sorted(self.out.glob("*.json"))
+        self.assertTrue(path.name.endswith("-e2e-before.json"))
+        result = json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual(result["requirements_file"], "benchmarks/e2e_tasks.json")
+        self.assertEqual(result["fingerprint"], fingerprint(E2E_FILE))
+        self.assertFalse(result["partial"])
+        self.assertEqual(result["summary"]["succeeded"], {"value": "2/3", "met": False})
+        self.assertIn("not scored", result["summary"]["sc_102"]["value"])
+
+    def test_records_carry_the_workspace_and_the_file_carries_the_configuration(self) -> None:
+        self.run_main(["--only", "stats"], FakeRuns({}))
+        result = self.results()[0]
+        self.assertEqual(result["records"][0]["workspace"], "workspace/benchmark-x/r")
+        self.assertEqual(result["requirements_file"], "benchmarks/requirements.json")
+        configuration = result["configuration"]
+        self.assertEqual(set(configuration["models"]), {"pm", "coder", "qa"})
+        self.assertEqual(set(configuration["effort"]), {"pm", "coder", "qa"})
+        self.assertIn(configuration["prompt_cache_ttl"], ("5m", "1h", "off"))
+        self.assertTrue(configuration["price_version"])
+        self.assertIn("commit", configuration)
+
+    def test_a_bad_label_is_a_usage_error(self) -> None:
+        self.assertEqual(self.run_main(["--label", "Not OK"], FakeRuns({}))[0], 2)
+
+    def test_results_for_another_file_never_make_the_benchmark_not_comparable(self) -> None:
+        other = self.out / "20260101T000000Z-e2e.json"
+        other.write_text(json.dumps({"fingerprint": "something-else",
+                                     "requirements_file": "benchmarks/e2e_tasks.json"}),
+                         encoding="utf-8")
+        _, err = self.run_main(["--only", "stats"], FakeRuns({}))
+        self.assertNotIn("not comparable", err)
+
+    def test_the_configuration_follows_the_environment(self) -> None:
+        with unittest.mock.patch.dict("os.environ", {"QA_EFFORT": "medium"}):
+            self.assertEqual(run_configuration()["effort"]["qa"], "medium")
 
 
 if __name__ == "__main__":

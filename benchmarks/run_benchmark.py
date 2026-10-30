@@ -7,11 +7,13 @@ evaluations can tell whether they are comparable.
 See specs/002-qa-feedback-loop-mcp/contracts/benchmark.md.
 
 Production hardening (003) adds the cost of every item and in total, and a comparison
-with a baseline results file (SC-205, SC-205a).
+with a baseline results file (SC-205, SC-205a). Demo readiness (004) adds other
+requirements files (the end-to-end tasks), a label for the results file name, each run's
+workspace, and the configuration the run used.
 
 Usage:
     python -m benchmarks.run_benchmark [--only ID[,ID...]] [--max-iterations N] [--out DIR]
-        [--baseline FILE]
+        [--baseline FILE] [--requirements FILE] [--label NAME]
 """
 
 import argparse
@@ -21,6 +23,7 @@ import os
 import re
 import shutil
 import statistics
+import subprocess
 import sys
 import tempfile
 import time
@@ -34,11 +37,12 @@ from agents.coder_agent import CoderAgent, CoderConfig
 from agents.llm import LARGE_MODEL
 from agents.pm_agent import PMAgent, PMConfig
 from agents.qa_agent import QAAgent, QAConfig
-from cost.pricing import DEFAULT_PRICE_TABLE, load_price_table
-from orchestration.services import RunServices
+from cost.pricing import DEFAULT_PRICE_TABLE, load_price_table, price_table_path
+from orchestration.services import RunServices, prompt_cache_ttl_from_env
 from orchestration.team import check_max_iterations, max_iterations_from_env, run_team
 from tools.python_exec import SandboxUnavailableError, ensure_sandbox
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
 BENCHMARK_FILE = Path(__file__).resolve().parent / "requirements.json"
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
 BENCHMARK_SIZE = 10
@@ -47,20 +51,30 @@ SC_102_SUCCESSES = 8
 SC_103_SHARE = 0.70
 SC_004_SECONDS = 600
 NOT_EVALUATED = {"value": "not evaluated (partial run)", "met": False}
+NOT_SCORED = {"value": "not scored (not the benchmark file)", "met": False}
 
 
-def load_benchmark(path: Path = BENCHMARK_FILE) -> dict:
-    """Read and check the benchmark file (contract §1).
+def load_benchmark(path: Path = BENCHMARK_FILE, fixed_size: bool = True) -> dict:
+    """Read and check a requirements file (contract §1).
+
+    With ``fixed_size`` (the benchmark) the file must hold exactly ``BENCHMARK_SIZE``
+    requirements; otherwise (such as the end-to-end tasks) it needs at least one.
 
     Raises:
         ValueError: if the file breaks any rule of the format.
     """
-    data = json.loads(path.read_text(encoding="utf-8"))
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError) as error:
+        raise ValueError(f"cannot read the requirements file {path}: {error}") from error
     if not isinstance(data.get("version"), int) or data["version"] < 1:
         raise ValueError("benchmark 'version' must be an integer of at least 1")
     items = data.get("requirements")
-    if not isinstance(items, list) or len(items) != BENCHMARK_SIZE:
-        raise ValueError(f"the benchmark must have exactly {BENCHMARK_SIZE} requirements")
+    if fixed_size:
+        if not isinstance(items, list) or len(items) != BENCHMARK_SIZE:
+            raise ValueError(f"the benchmark must have exactly {BENCHMARK_SIZE} requirements")
+    elif not isinstance(items, list) or not items:
+        raise ValueError(f"{path} must list at least one requirement")
     ids = [item.get("id") for item in items]
     if len(set(ids)) != len(ids):
         raise ValueError("benchmark ids must be unique")
@@ -73,9 +87,51 @@ def load_benchmark(path: Path = BENCHMARK_FILE) -> dict:
     return data
 
 
+def is_benchmark_file(path: Path) -> bool:
+    """Whether ``path`` is the fixed 10-item benchmark (the file the criteria apply to)."""
+    return Path(path).resolve() == BENCHMARK_FILE
+
+
 def fingerprint(path: Path = BENCHMARK_FILE) -> str:
     """Return the sha256 of the benchmark file's bytes."""
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def display_path(path: Path) -> str:
+    """``path`` relative to the repository when it is inside it (no host paths in results)."""
+    resolved = Path(path).resolve()
+    try:
+        return resolved.relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        return resolved.name
+
+
+def run_configuration(env: dict | None = None) -> dict:
+    """The settings a run uses: models and effort per agent, cache TTL, prices, commit.
+
+    Read from the environment the same way the agents read it, so the results file says
+    which configuration produced its numbers (FR-019).
+    """
+    env = os.environ if env is None else env
+    configs = {"pm": PMConfig.from_env(), "coder": CoderConfig.from_env(),
+               "qa": QAConfig.from_env()}
+    return {
+        "models": {agent: config.model for agent, config in configs.items()},
+        "effort": {agent: config.effort for agent, config in configs.items()},
+        "prompt_cache_ttl": prompt_cache_ttl_from_env(env),
+        "price_version": load_price_table(price_table_path(env))["version"],
+        "commit": current_commit(),
+    }
+
+
+def current_commit() -> str | None:
+    """The short hash of the checked-out commit, or ``None`` outside a git checkout."""
+    try:
+        result = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=REPO_ROOT,
+                                capture_output=True, text=True, timeout=10, check=False)
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    return result.stdout.strip() or None if result.returncode == 0 else None
 
 
 def record_for(entry: dict, final: dict | None, error: str | None, duration: float) -> dict:
@@ -104,6 +160,7 @@ def record_for(entry: dict, final: dict | None, error: str | None, duration: flo
             agent: entry["cost_usd"] for agent, entry in final.get("agent_usage", {}).items()
         } if final else {},
         "cost_report": final.get("cost_report_path") if final else None,
+        "workspace": final.get("workspace") if final else None,
         "error": error or (final.get("error") if final else None),
     }
 
@@ -199,23 +256,28 @@ def main(argv: list[str] | None = None, run_team=run_team, make_agents=build_age
     try:
         entries, max_iterations = _plan(args)
         baseline = _read_baseline(args.baseline)
+        _check_label(args.label)
+        configuration = run_configuration()
         if make_agents is build_agents:
             _preflight()
     except ValueError as error:
         print(f"error: {error}", file=sys.stderr)
         return 2
 
-    partial = len(entries) < BENCHMARK_SIZE
+    scored = is_benchmark_file(args.requirements)
+    partial = len(entries) < BENCHMARK_SIZE if scored else bool(args.only)
     print(f"Running {len(entries)} benchmark requirements (live model calls)", file=sys.stderr)
     started_at = _now()
     session = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     records = [
         _run_item(entry, run_team, make_agents, max_iterations, session) for entry in entries
     ]
-    summary = score(records, partial)
+    summary = score(records, partial) if scored else _unscored(records)
     result = {
-        "benchmark_version": load_benchmark()["version"],
-        "fingerprint": fingerprint(),
+        "benchmark_version": load_benchmark(args.requirements, scored)["version"],
+        "fingerprint": fingerprint(args.requirements),
+        "requirements_file": display_path(args.requirements),
+        "configuration": configuration,
         "started_at": started_at,
         "finished_at": _now(),
         "max_iterations": max_iterations,
@@ -224,13 +286,28 @@ def main(argv: list[str] | None = None, run_team=run_team, make_agents=build_age
         "summary": summary,
         "totals": cost_totals(records),
     }
-    _warn_if_not_comparable(args.out, result["fingerprint"])
-    path = _write_results(args.out, result)
+    _warn_if_not_comparable(args.out, result["fingerprint"], result["requirements_file"])
+    path = _write_results(args.out, result, args.label)
     _print_summary(records, summary, path)
     for line in baseline_lines(result["totals"], baseline) if baseline else []:
         print(f"  {line}", file=sys.stderr)
+    if not scored:
+        return 0  # Only the fixed benchmark has pass criteria that set the exit code.
     both_met = summary["sc_102"]["met"] and summary["sc_103"]["met"]
     return 0 if not partial and both_met else 1
+
+
+def _unscored(records: list[dict]) -> dict:
+    """The summary for a file other than the benchmark: reported, never judged."""
+    succeeded = sum(1 for item in records if item["succeeded"])
+    every = {"value": f"{succeeded}/{len(records)}", "met": succeeded == len(records)}
+    return {"succeeded": every, "sc_102": NOT_SCORED, "sc_103": NOT_SCORED}
+
+
+def _check_label(label: str | None) -> None:
+    """Reject a label that is not lowercase kebab-case (it becomes part of a file name)."""
+    if label is not None and not ID_PATTERN.match(label):
+        raise ValueError(f"--label {label!r} must be lowercase kebab-case, e.g. e2e-before")
 
 
 def _parse_args(argv: list[str] | None) -> argparse.Namespace:
@@ -243,12 +320,17 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     parser.add_argument("--out", type=Path, default=RESULTS_DIR, help="results folder")
     parser.add_argument("--baseline", type=Path,
                         help="a results file to compare cost and duration against")
+    parser.add_argument("--requirements", type=Path, default=BENCHMARK_FILE,
+                        help="the requirements file to run (default: the 10-item benchmark)")
+    parser.add_argument("--label", help="appended to the results file name, e.g. e2e-before")
     return parser.parse_args(argv)
 
 
 def _plan(args) -> tuple[list[dict], int]:
     """Pick the entries and the iteration limit; raise ValueError for bad options."""
-    entries = load_benchmark()["requirements"]
+    entries = load_benchmark(args.requirements, is_benchmark_file(args.requirements))[
+        "requirements"
+    ]
     if args.only:
         wanted = [item.strip() for item in args.only.split(",") if item.strip()]
         known = {entry["id"] for entry in entries}
@@ -310,12 +392,17 @@ def _run_item(entry: dict, run_team, make_agents, max_iterations: int, session: 
     return item
 
 
-def _warn_if_not_comparable(out: Path, current: str) -> None:
+def _warn_if_not_comparable(out: Path, current: str, requirements_file: str) -> None:
+    """Warn when the latest results for the same requirements file had other contents."""
+    default = display_path(BENCHMARK_FILE)
     for path in sorted(out.glob("*.json"), reverse=True):
         try:
-            earlier = json.loads(path.read_text(encoding="utf-8")).get("fingerprint")
+            earlier_result = json.loads(path.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):
             continue
+        if earlier_result.get("requirements_file", default) != requirements_file:
+            continue
+        earlier = earlier_result.get("fingerprint")
         if earlier and earlier != current:
             print(
                 f"warning: benchmark set changed since {path.name}; results are not comparable",
@@ -324,13 +411,14 @@ def _warn_if_not_comparable(out: Path, current: str) -> None:
             return
 
 
-def _write_results(out: Path, result: dict) -> Path:
+def _write_results(out: Path, result: dict, label: str | None = None) -> Path:
     out.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    path, n = out / f"{stamp}.json", 1
+    stem = f"{stamp}-{label}" if label else stamp
+    path, n = out / f"{stem}.json", 1
     while path.exists():
         n += 1
-        path = out / f"{stamp}-{n}.json"
+        path = out / f"{stem}-{n}.json"
     path.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     return path
 
