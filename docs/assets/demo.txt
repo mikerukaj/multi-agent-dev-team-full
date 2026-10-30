@@ -1,0 +1,25 @@
+[demo] SIMULATED: scripted model replies and simulated sandbox; no API key, no network, no spend
+[pm] "Temperature converter": 2 tasks
+[handoff] T1 (high) Parse the temperature
+[step 1] write_file temp.py
+[step 2] exec_python temp.py
+[coder] T1 completed in 3 steps (<t> s)
+[handoff] T2 (high) Convert and print
+[step 1] read_file temp.py
+[step 2] exec_python temp.py
+[coder] T2 completed in 3 steps (<t> s)
+[step 1] exec_python temp.py
+[reflect] before QA #1: 1 critique items, revision completed
+[a2a] coder → qa-debugger review-program task <id>… completed (<t> s)
+[qa] #1: 6 passed, 1 failed, 0 errors → 1 blocking, 0 advisory
+[step 1] write_file temp.py
+[step 2] exec_python temp.py
+[a2a] qa-debugger → coder fix-program task <id>… completed (<t> s)
+[fix] #1: completed (3 steps), answered 1 of 1 (0 disputed)
+[step 1] exec_python temp.py
+[reflect] before QA #2: 1 critique items, revision completed
+[a2a] coder → qa-debugger review-program task <id>… completed (<t> s)
+[qa] #2: 7 passed, 0 failed, 0 errors → complete
+[finish] completed (complete) · report: .qa/report.md
+[demo] files: <tmp>
+[demo] SIMULATED: scripted model replies and simulated sandbox; no API key, no network, no spend

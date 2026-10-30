@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="541" viewBox="0 0 920 541" role="img" aria-label="Simulated run of python -m demo: the agents plan, code, fail a test, fix it and pass">
+<style>text{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;white-space:pre;opacity:0}@keyframes l0{0%,0.0%{opacity:0}0.5%,100%{opacity:1}}@keyframes l1{0%,3.26%{opacity:0}3.76%,100%{opacity:1}}@keyframes l2{0%,6.51%{opacity:0}7.01%,100%{opacity:1}}@keyframes l3{0%,9.77%{opacity:0}10.27%,100%{opacity:1}}@keyframes l4{0%,13.02%{opacity:0}13.52%,100%{opacity:1}}@keyframes l5{0%,16.28%{opacity:0}16.78%,100%{opacity:1}}@keyframes l6{0%,19.53%{opacity:0}20.03%,100%{opacity:1}}@keyframes l7{0%,22.79%{opacity:0}23.29%,100%{opacity:1}}@keyframes l8{0%,26.05%{opacity:0}26.55%,100%{opacity:1}}@keyframes l9{0%,29.3%{opacity:0}29.8%,100%{opacity:1}}@keyframes l10{0%,32.56%{opacity:0}33.06%,100%{opacity:1}}@keyframes l11{0%,35.81%{opacity:0}36.31%,100%{opacity:1}}@keyframes l12{0%,39.07%{opacity:0}39.57%,100%{opacity:1}}@keyframes l13{0%,42.33%{opacity:0}42.83%,100%{opacity:1}}@keyframes l14{0%,45.58%{opacity:0}46.08%,100%{opacity:1}}@keyframes l15{0%,48.84%{opacity:0}49.34%,100%{opacity:1}}@keyframes l16{0%,52.09%{opacity:0}52.59%,100%{opacity:1}}@keyframes l17{0%,55.35%{opacity:0}55.85%,100%{opacity:1}}@keyframes l18{0%,58.6%{opacity:0}59.1%,100%{opacity:1}}@keyframes l19{0%,61.86%{opacity:0}62.36%,100%{opacity:1}}@keyframes l20{0%,65.12%{opacity:0}65.62%,100%{opacity:1}}@keyframes l21{0%,68.37%{opacity:0}68.87%,100%{opacity:1}}@keyframes l22{0%,71.63%{opacity:0}72.13%,100%{opacity:1}}@keyframes l23{0%,74.88%{opacity:0}75.38%,100%{opacity:1}}@keyframes l24{0%,78.14%{opacity:0}78.64%,100%{opacity:1}}</style>
+<rect width="920" height="541" rx="8" fill="#0d1117"/>
+<rect width="920" height="26" rx="8" fill="#161b22"/>
+<circle cx="18" cy="13" r="5" fill="#ff5f56"/>
+<circle cx="36" cy="13" r="5" fill="#ffbd2e"/>
+<circle cx="54" cy="13" r="5" fill="#27c93f"/>
+<text x="460" y="17" text-anchor="middle" fill="#8b949e" style="opacity:1">Simulated run · python -m demo</text>
+<text x="16" y="46" fill="#e3b341" style="animation:l0 43.0s linear infinite">[demo] SIMULATED: scripted model replies and simulated sandbox; no API key, no network, no spend</text>
+<text x="16" y="65" fill="#79c0ff" style="animation:l1 43.0s linear infinite">[pm] "Temperature converter": 2 tasks</text>
+<text x="16" y="84" fill="#c9d1d9" style="animation:l2 43.0s linear infinite">[handoff] T1 (high) Parse the temperature</text>
+<text x="16" y="103" fill="#8b949e" style="animation:l3 43.0s linear infinite">[step 1] write_file temp.py</text>
+<text x="16" y="122" fill="#8b949e" style="animation:l4 43.0s linear infinite">[step 2] exec_python temp.py</text>
+<text x="16" y="141" fill="#79c0ff" style="animation:l5 43.0s linear infinite">[coder] T1 completed in 3 steps (0.845 s)</text>
+<text x="16" y="160" fill="#c9d1d9" style="animation:l6 43.0s linear infinite">[handoff] T2 (high) Convert and print</text>
+<text x="16" y="179" fill="#8b949e" style="animation:l7 43.0s linear infinite">[step 1] read_file temp.py</text>
+<text x="16" y="198" fill="#8b949e" style="animation:l8 43.0s linear infinite">[step 2] exec_python temp.py</text>
+<text x="16" y="217" fill="#79c0ff" style="animation:l9 43.0s linear infinite">[coder] T2 completed in 3 steps (0.822 s)</text>
+<text x="16" y="236" fill="#8b949e" style="animation:l10 43.0s linear infinite">[step 1] exec_python temp.py</text>
+<text x="16" y="255" fill="#c9d1d9" style="animation:l11 43.0s linear infinite">[reflect] before QA #1: 1 critique items, revision completed</text>
+<text x="16" y="274" fill="#79c0ff" style="animation:l12 43.0s linear infinite">[a2a] coder → qa-debugger review-program task 8c24028c… completed (0.8 s)</text>
+<text x="16" y="293" fill="#f85149" style="animation:l13 43.0s linear infinite">[qa] #1: 6 passed, 1 failed, 0 errors → 1 blocking, 0 advisory</text>
+<text x="16" y="312" fill="#8b949e" style="animation:l14 43.0s linear infinite">[step 1] write_file temp.py</text>
+<text x="16" y="331" fill="#8b949e" style="animation:l15 43.0s linear infinite">[step 2] exec_python temp.py</text>
+<text x="16" y="350" fill="#79c0ff" style="animation:l16 43.0s linear infinite">[a2a] qa-debugger → coder fix-program task cca98de7… completed (0.8 s)</text>
+<text x="16" y="369" fill="#c9d1d9" style="animation:l17 43.0s linear infinite">[fix] #1: completed (3 steps), answered 1 of 1 (0 disputed)</text>
+<text x="16" y="388" fill="#8b949e" style="animation:l18 43.0s linear infinite">[step 1] exec_python temp.py</text>
+<text x="16" y="407" fill="#c9d1d9" style="animation:l19 43.0s linear infinite">[reflect] before QA #2: 1 critique items, revision completed</text>
+<text x="16" y="426" fill="#79c0ff" style="animation:l20 43.0s linear infinite">[a2a] coder → qa-debugger review-program task 3f4cf30d… completed (0.8 s)</text>
+<text x="16" y="445" fill="#3fb950" style="animation:l21 43.0s linear infinite">[qa] #2: 7 passed, 0 failed, 0 errors → complete</text>
+<text x="16" y="464" fill="#3fb950" style="animation:l22 43.0s linear infinite">[finish] completed (complete) · report: .qa/report.md</text>
+<text x="16" y="483" fill="#8b949e" style="animation:l23 43.0s linear infinite">[demo] files: /tmp/demo-…</text>
+<text x="16" y="502" fill="#e3b341" style="animation:l24 43.0s linear infinite">[demo] SIMULATED: scripted model replies and simulated sandbox; no API key, no network, no spend</text>
+</svg>
