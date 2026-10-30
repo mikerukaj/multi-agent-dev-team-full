@@ -11,9 +11,11 @@ from unittest import mock
 from agents.llm import ModelCaller, parse_reply
 from agents.pm_agent import PMAgent, PMConfig
 from orchestration.services import RunServices
+from orchestration.state import PMSpecReply
 from resilience.response_cache import ResponseCache
 from tests import TEST_ENV
 from tests.fakes import scripted_claude as sc
+from tests.schema_check import load_fixture_schema, schema_errors
 
 
 class Reply(TypedDict):
@@ -106,6 +108,42 @@ class FoundationTests(unittest.TestCase):
                                {"type": "text", "text": ' "count": 1}'}])
         self.assertEqual(parse_reply(response, Reply), ({"answer": "a", "count": 1},
                                                          '{"answer": "a", "count": 1}', []))
+
+
+class OperationAttributionTests(unittest.TestCase):
+    """Each ``model_call`` event names its operation, so cost can be ranked per interaction."""
+
+    def model_calls(self, services: RunServices) -> list[dict]:
+        return [event for event in services.events.events if event["event"] == "model_call"]
+
+    def assert_valid_events(self, services: RunServices) -> None:
+        schema = load_fixture_schema("run-event.schema.json")
+        for event in services.events.events:
+            self.assertEqual(schema_errors(event, schema, schema), [], event)
+
+    def test_a_typed_call_records_its_reply_type(self) -> None:
+        model, _ = caller([sc.text_reply({"answer": "yes", "count": 2})])
+        model.call(dict(REQUEST), PMSpecReply)
+        (event,) = self.model_calls(model._services)
+        self.assertEqual(event["details"]["operation"], "PMSpecReply")
+        self.assert_valid_events(model._services)
+
+    def test_a_call_without_a_reply_type_is_a_tool_turn(self) -> None:
+        model, _ = caller([sc.tool_use_reply([("read_file", {"path": "a.py", "purpose": "p"})])])
+        model.call(dict(REQUEST))
+        (event,) = self.model_calls(model._services)
+        self.assertEqual(event["details"]["operation"], "tool_turn")
+
+    def test_a_failed_call_still_records_its_operation(self) -> None:
+        services = RunServices.create("run-test", env=TEST_ENV, sleep=lambda delay: None,
+                                      response_cache=None)
+        model = ModelCaller("qa", sc.ScriptedClaude([sc.overloaded_error()] * 4), services)
+        reply = model.call(dict(REQUEST), Reply)
+        self.assertIsNotNone(reply.failure)
+        (event,) = self.model_calls(services)
+        self.assertEqual(event["outcome"], "failed")
+        self.assertEqual(event["details"]["operation"], "Reply")
+        self.assert_valid_events(services)
 
 
 

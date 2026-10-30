@@ -271,7 +271,7 @@ class ModelCaller:
             outcome=outcome, model=request["model"], tokens=dict(reply.usage),
             duration_ms=int((time.monotonic() - started) * 1000),
             operation_ms=int(operation * 1000), served_from=reply.served_from,
-            cost_usd=reply.cost_usd,
+            cost_usd=reply.cost_usd, operation=operation_name(reply_type),
         )
         if reply.problems:
             self._services.events.emit(
@@ -297,6 +297,14 @@ class ModelCaller:
     def _event(self, event: str, severity: str, **details) -> None:
         self._services.on_event({"event": event, "severity": severity, "agent": self.agent,
                                  "dependency": "anthropic", **details})
+
+
+def operation_name(reply_type: type | None) -> str:
+    """What a model call was for, as ``cost.audit`` groups it: the reply type's name.
+
+    A call with no reply type is a tool-using loop turn (the Coder's build and fix steps).
+    """
+    return reply_type.__name__ if reply_type else "tool_turn"
 
 
 def served_model(response, request: dict) -> str:
