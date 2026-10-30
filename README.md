@@ -497,43 +497,85 @@ Compose Chroma service or a Chroma server (`CHROMA_HOST`, `CHROMA_PORT`).
 a writable workspace and cost-report folder, Chroma and the price table without a model
 call; every team run does the same before it starts.
 
-## Setup
+## Quick start (10 minutes)
 
-You need Python 3.12, Docker (your user must be able to run `docker`), and an Anthropic
-API key.
+These steps take a software engineer who has never seen the project from a clone to a
+finished live run. Times are for a laptop on a normal connection. Steps 1–5 cost
+nothing; step 6 makes paid model calls under a $2.00 cap.
+
+### 1. Prerequisites (1 minute)
+
+- **Python 3.12** (`python3.12 --version`)
+- **Docker**, runnable by your user (`docker version` shows a Server section). Generated
+  code and tests only ever run in a locked-down Docker sandbox.
+- **An Anthropic API key**, for step 6 only
+- Linux is verified. macOS (with Docker Desktop) gets the same commands, with the
+  differences noted, but hasn't been verified yet. On Windows, use WSL 2.
+
+### 2. Clone and install (3 minutes)
 
 ```bash
+git clone https://github.com/mikerukaj/multi-agent-dev-team-full.git
+cd multi-agent-dev-team-full
 python3.12 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt        # or requirements-dev.txt, to run the tests
-echo 'ANTHROPIC_API_KEY=sk-ant-...' > .env
+pip install -r requirements.txt        # requirements-dev.txt adds the test and doc tools
 ```
 
-The first run builds the sandbox image `multi-agent-sandbox:py3.12-pytest9.1.1` from
-`sandbox/Dockerfile`. This is the only step with network access, and it runs no generated
-code. The first run also downloads Chroma's embedding model (about 80 MB, cached in
-`~/.cache/chroma`).
-
-Chroma needs SQLite 3.35 or newer. On hosts with an older system SQLite (RHEL 8 ships
-3.26), `agents/memory.py` switches to the bundled `pysqlite3-binary` build automatically.
-
-## Usage
-
-### The team
+While pip runs, build the sandbox image in a second terminal. Otherwise the first live
+run builds it (about a minute; the only step with network access, and it runs no
+generated code):
 
 ```bash
-python -m orchestration.team "A command-line tool that converts temperatures between Celsius and Fahrenheit"
+docker build -t multi-agent-sandbox:py3.12-pytest9.1.1 sandbox/
 ```
 
-| Option | Meaning |
-|--------|---------|
-| `--max-iterations N` | Most QA reviews per run, 1 to 10 (default `TEAM_MAX_ITERATIONS` or 5) |
-| `--max-steps N` | Maximum Coder model calls per task or fix round, 1 to 10 (default 10) |
-| `--timeout SECONDS` | Seconds before a run of generated code is killed (default 30) |
-| `--budget USD` | Per-run spending cap (default `RUN_BUDGET_USD`, or none) |
-| `--resume RUN_ID` | Continue a run from its last checkpoint (no requirement, and no other setting) |
+### 3. Configure (1 minute)
 
-Progress goes to stderr:
+```bash
+cp .env.example .env
+```
+
+Then open `.env` and set your key. It's the only required setting:
+
+| Variable | Needed for | Meaning |
+|----------|-----------|---------|
+| `ANTHROPIC_API_KEY` | live runs | Your Anthropic API key. Read at run time, never logged or committed |
+| `RUN_BUDGET_USD` | optional | A spending cap for every run (`--budget` sets it for one run) |
+| `TEAM_MAX_ITERATIONS` | optional | Most QA reviews per run, 1–10 (default 5) |
+| `LANGSMITH_TRACING`, `LANGSMITH_API_KEY` | optional | Send one LangSmith trace per run |
+| `HOST_UID`, `HOST_GID`, `DOCKER_GID` | Docker Compose only | `id -u`, `id -g`, and the Docker socket's group: `stat -c %g /var/run/docker.sock` on Linux, `stat -f %g /var/run/docker.sock` on macOS |
+
+Every other setting (models, effort, timeouts, retries, caching) is in
+[docs/CONFIGURATION.md](docs/CONFIGURATION.md).
+
+### 4. Check the environment (10 seconds)
+
+```bash
+python -m orchestration.health
+```
+
+Every line should start with `ok` (or `info` for optional items). Any line that isn't
+ok ends with what to do about it, for example the `docker build` command above.
+
+### 5. Watch it work offline (15 seconds, free)
+
+```bash
+python -m demo
+```
+
+This runs the whole team on a temperature converter with scripted model replies and a
+simulated sandbox. It needs no key, no Docker and no network. QA's tests catch a real
+bug (`-40F` loses its sign), the Coder fixes it, and the second review passes. The
+output says it's simulated; step 6 is the real thing.
+
+### 6. Run the team live (3–5 minutes, under $2.00)
+
+```bash
+python -m orchestration.team "A command-line tool that converts temperatures between Celsius and Fahrenheit" --budget 2
+```
+
+Progress goes to stderr as the agents work:
 
 ```text
 [pm] "Temperature converter": 3 tasks
@@ -551,8 +593,25 @@ Progress goes to stderr:
 [finish] completed (complete) · report: .qa/report.md
 ```
 
-The final `TeamState` is printed to stdout as JSON (redacted), then the cost report's
-path, QA's report path and, with tracing on, the trace URL go to stderr. Exit codes:
+If the run stops early (rate limit, outage, budget), it ends with a resumable status.
+Continue it with `python -m orchestration.team --resume <run_id>`.
+
+### 7. Read the results (1 minute)
+
+| Where | What |
+|-------|------|
+| stdout | The final run state as JSON: spec, tasks, every QA iteration, cost (secrets redacted) |
+| `workspace/<run_id>/` | The generated program and QA's tests (`tests/`) |
+| `workspace/<run_id>/.qa/report.md` | QA's final report: result, iterations, unresolved findings |
+| `docs/cost_reports/<run_id>.json` | Tokens and cost per agent |
+| `workspace/.runs/<run_id>/events.jsonl` | Every event. `python -m cost.audit workspace/.runs/<run_id>` ranks what each agent operation cost |
+
+## Usage reference
+
+### Exit codes
+
+The final run state is printed to stdout as JSON (redacted), then the cost report's path,
+QA's report path and, with tracing on, the trace URL go to stderr. Exit codes:
 
 - **0:** the run completed.
 - **1:** the run ended for good: `failed`, `rejected` or `error` with an end reason that
@@ -606,38 +665,7 @@ usage errors.
 
 ### Configuration
 
-All settings are optional environment variables (or `.env` entries):
-
-| Variable | Default | Meaning |
-|----------|---------|---------|
-| `TEAM_MAX_ITERATIONS` | `5` | Most QA reviews per run (1 to 10); `--max-iterations` overrides it |
-| `A2A_REQUEST_TIMEOUT` | `1800` | Seconds to wait for an A2A answer before giving up |
-| `PM_MODEL` | `claude-sonnet-5-5` | PM model ID |
-| `PM_EFFORT` | `high` | PM effort: `low`, `medium`, `high`, `xhigh`, or `max` |
-| `PM_USE_FALLBACKS` | on if the model supports it (on for Sonnet) | Retry PM requests the model declines on a fallback model |
-| `CODER_MODEL` | `claude-haiku-5-5` (was `claude-sonnet-5-5`) | Coder model ID |
-| `CODER_EFFORT` | `medium` | Coder effort |
-| `CODER_MAX_STEPS` | `10` | Maximum Coder model calls per task (1 to 10) |
-| `CODER_REFLECTION_ROUNDS` | `1` | Critique-and-revise rounds before each QA handoff (1 to 3) |
-| `CODER_EXEC_TIMEOUT` | `30` | Seconds before generated code is killed |
-| `CODER_WORKSPACE` | `workspace` | Folder for per-run workspaces |
-| `CODER_CHROMA_PATH` | `.chroma` | Folder for the Coder's long-term memory |
-| `CODER_USE_FALLBACKS` | on if the model supports it (off for Haiku) | Retry declined Coder requests on a fallback model; `true` with Haiku is refused |
-| `CODER_SANDBOX_IMAGE` | `multi-agent-sandbox:py3.12-pytest9.1.1` | Image for Coder runs and QA test runs (the project image is built locally) |
-| `QA_MODEL` | `claude-haiku-5-5` (was `claude-sonnet-5-5`) | QA model ID |
-| `QA_EFFORT` | `high` | QA effort |
-| `QA_TEST_TIMEOUT` | `60` | Seconds before a QA test run is killed |
-| `QA_REPAIR_ATTEMPTS` | `2` | Times QA may repair a test suite that does not load (0 to 3) |
-| `QA_USE_FALLBACKS` | on if the model supports it (off for Haiku) | Retry declined QA requests on a fallback model |
-| `PROMPT_CACHE_TTL` | `5m` | Prompt-cache lifetime: `5m`, `1h` or `off` |
-| `RUN_BUDGET_USD` | unset (no cap) | Per-run spending cap; `--budget` overrides it |
-| `PRICE_TABLE_PATH` | `cost/prices.json` | Price table |
-| `COST_REPORT_DIR` | `docs/cost_reports` | Cost report folder |
-| `LOG_LEVEL` | `info` | Lowest event severity written: `debug`, `info`, `warning`, `error` |
-| `RETRY_*`, `CIRCUIT_*`, `LLM_RESPONSE_CACHE_*` | see [Reliability](#reliability-retries-circuit-breakers-and-graceful-degradation) | Retries, circuit breakers, degraded-response cache |
-| `LANGSMITH_TRACING`, `LANGSMITH_API_KEY`, `LANGSMITH_PROJECT`, `LANGSMITH_ENDPOINT` | off | LangSmith tracing |
-| `CHROMA_HOST`, `CHROMA_PORT` | unset, `8000` | Use a Chroma server instead of the embedded `CODER_CHROMA_PATH` |
-| `QA_OUTPUT_ROOT` | system temp | Where QA's JUnit folder is created (a host path under Compose) |
+Every option and environment variable is listed in [docs/CONFIGURATION.md](docs/CONFIGURATION.md).
 
 ## Benchmark
 
