@@ -1,0 +1,1158 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="pdoc 16.0.0"/>
+    <title>agents.qa_agent API documentation</title>
+
+    <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
+    <style>/*! syntax-highlighting.css */pre{line-height:125%;}span.linenos{color:inherit; background-color:transparent; padding-left:5px; padding-right:20px;}.pdoc-code .hll{background-color:#ffffcc}.pdoc-code{background:#f8f8f8;}.pdoc-code .c{color:#3D7B7B; font-style:italic}.pdoc-code .err{border:1px solid #FF0000}.pdoc-code .k{color:#008000; font-weight:bold}.pdoc-code .o{color:#666666}.pdoc-code .ch{color:#3D7B7B; font-style:italic}.pdoc-code .cm{color:#3D7B7B; font-style:italic}.pdoc-code .cp{color:#9C6500}.pdoc-code .cpf{color:#3D7B7B; font-style:italic}.pdoc-code .c1{color:#3D7B7B; font-style:italic}.pdoc-code .cs{color:#3D7B7B; font-style:italic}.pdoc-code .gd{color:#A00000}.pdoc-code .ge{font-style:italic}.pdoc-code .gr{color:#E40000}.pdoc-code .gh{color:#000080; font-weight:bold}.pdoc-code .gi{color:#008400}.pdoc-code .go{color:#717171}.pdoc-code .gp{color:#000080; font-weight:bold}.pdoc-code .gs{font-weight:bold}.pdoc-code .gu{color:#800080; font-weight:bold}.pdoc-code .gt{color:#0044DD}.pdoc-code .kc{color:#008000; font-weight:bold}.pdoc-code .kd{color:#008000; font-weight:bold}.pdoc-code .kn{color:#008000; font-weight:bold}.pdoc-code .kp{color:#008000}.pdoc-code .kr{color:#008000; font-weight:bold}.pdoc-code .kt{color:#B00040}.pdoc-code .m{color:#666666}.pdoc-code .s{color:#BA2121}.pdoc-code .na{color:#687822}.pdoc-code .nb{color:#008000}.pdoc-code .nc{color:#0000FF; font-weight:bold}.pdoc-code .no{color:#880000}.pdoc-code .nd{color:#AA22FF}.pdoc-code .ni{color:#717171; font-weight:bold}.pdoc-code .ne{color:#CB3F38; font-weight:bold}.pdoc-code .nf{color:#0000FF}.pdoc-code .nl{color:#767600}.pdoc-code .nn{color:#0000FF; font-weight:bold}.pdoc-code .nt{color:#008000; font-weight:bold}.pdoc-code .nv{color:#19177C}.pdoc-code .ow{color:#AA22FF; font-weight:bold}.pdoc-code .w{color:#bbbbbb}.pdoc-code .mb{color:#666666}.pdoc-code .mf{color:#666666}.pdoc-code .mh{color:#666666}.pdoc-code .mi{color:#666666}.pdoc-code .mo{color:#666666}.pdoc-code .sa{color:#BA2121}.pdoc-code .sb{color:#BA2121}.pdoc-code .sc{color:#BA2121}.pdoc-code .dl{color:#BA2121}.pdoc-code .sd{color:#BA2121; font-style:italic}.pdoc-code .s2{color:#BA2121}.pdoc-code .se{color:#AA5D1F; font-weight:bold}.pdoc-code .sh{color:#BA2121}.pdoc-code .si{color:#A45A77; font-weight:bold}.pdoc-code .sx{color:#008000}.pdoc-code .sr{color:#A45A77}.pdoc-code .s1{color:#BA2121}.pdoc-code .ss{color:#19177C}.pdoc-code .bp{color:#008000}.pdoc-code .fm{color:#0000FF}.pdoc-code .vc{color:#19177C}.pdoc-code .vg{color:#19177C}.pdoc-code .vi{color:#19177C}.pdoc-code .vm{color:#19177C}.pdoc-code .il{color:#666666}</style>
+    <style>/*! theme.css */:root{--pdoc-background:#fff;}.pdoc{--text:#212529;--muted:#6c757d;--link:#3660a5;--link-hover:#1659c5;--code:#f8f8f8;--active:#fff598;--accent:#eee;--accent2:#c1c1c1;--nav-hover:rgba(255, 255, 255, 0.5);--name:#0066BB;--def:#008800;--annotation:#007020;}</style>
+    <style>/*! layout.css */html, body{width:100%;height:100%;}html, main{scroll-behavior:smooth;}body{background-color:var(--pdoc-background);}@media (max-width:769px){#navtoggle{cursor:pointer;position:absolute;width:50px;height:40px;top:1rem;right:1rem;border-color:var(--text);color:var(--text);display:flex;opacity:0.8;z-index:999;}#navtoggle:hover{opacity:1;}#togglestate + div{display:none;}#togglestate:checked + div{display:inherit;}main, header{padding:2rem 3vw;}header + main{margin-top:-3rem;}.git-button{display:none !important;}nav input[type="search"]{max-width:77%;}nav input[type="search"]:first-child{margin-top:-6px;}nav input[type="search"]:valid ~ *{display:none !important;}}@media (min-width:770px){:root{--sidebar-width:clamp(12.5rem, 28vw, 22rem);}nav{position:fixed;overflow:auto;height:100vh;width:var(--sidebar-width);}main, header{padding:3rem 2rem 3rem calc(var(--sidebar-width) + 3rem);width:calc(54rem + var(--sidebar-width));max-width:100%;}header + main{margin-top:-4rem;}#navtoggle{display:none;}}#togglestate{position:absolute;height:0;opacity:0;}nav.pdoc{--pad:clamp(0.5rem, 2vw, 1.75rem);--indent:1.5rem;background-color:var(--accent);border-right:1px solid var(--accent2);box-shadow:0 0 20px rgba(50, 50, 50, .2) inset;padding:0 0 0 var(--pad);overflow-wrap:anywhere;scrollbar-width:thin; scrollbar-color:var(--accent2) transparent; z-index:1}nav.pdoc::-webkit-scrollbar{width:.4rem; }nav.pdoc::-webkit-scrollbar-thumb{background-color:var(--accent2); }nav.pdoc > div{padding:var(--pad) 0;}nav.pdoc .module-list-button{display:inline-flex;align-items:center;color:var(--text);border-color:var(--muted);margin-bottom:1rem;}nav.pdoc .module-list-button:hover{border-color:var(--text);}nav.pdoc input[type=search]{display:block;outline-offset:0;width:calc(100% - var(--pad));}nav.pdoc .logo{max-width:calc(100% - var(--pad));max-height:35vh;display:block;margin:0 auto 1rem;transform:translate(calc(-.5 * var(--pad)), 0);}nav.pdoc ul{list-style:none;padding-left:0;}nav.pdoc > div > ul{margin-left:calc(0px - var(--pad));}nav.pdoc li a{padding:.2rem 0 .2rem calc(var(--pad) + var(--indent));}nav.pdoc > div > ul > li > a{padding-left:var(--pad);}nav.pdoc li{transition:all 100ms;}nav.pdoc li:hover{background-color:var(--nav-hover);}nav.pdoc a, nav.pdoc a:hover{color:var(--text);}nav.pdoc a{display:block;}nav.pdoc > h2:first-of-type{margin-top:1.5rem;}nav.pdoc .class:before{content:"class ";color:var(--muted);}nav.pdoc .function:after{content:"()";color:var(--muted);}nav.pdoc footer:before{content:"";display:block;width:calc(100% - var(--pad));border-top:solid var(--accent2) 1px;margin-top:1.5rem;padding-top:.5rem;}nav.pdoc footer{font-size:small;}</style>
+    <style>/*! content.css */.pdoc{color:var(--text);box-sizing:border-box;line-height:1.5;background:none;}.pdoc .pdoc-button{cursor:pointer;display:inline-block;border:solid black 1px;border-radius:2px;font-size:.75rem;padding:calc(0.5em - 1px) 1em;transition:100ms all;}.pdoc .alert{padding:1rem 1rem 1rem calc(1.5rem + 24px);border:1px solid transparent;border-radius:.25rem;background-repeat:no-repeat;background-position:.75rem center;margin-bottom:1rem;}.pdoc .alert > em{display:none;}.pdoc .alert > *:last-child{margin-bottom:0;}.pdoc .alert.note{color:#084298;background-color:#cfe2ff;border-color:#b6d4fe;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23084298%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M8%2016A8%208%200%201%200%208%200a8%208%200%200%200%200%2016zm.93-9.412-1%204.705c-.07.34.029.533.304.533.194%200%20.487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703%200-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381%202.29-.287zM8%205.5a1%201%200%201%201%200-2%201%201%200%200%201%200%202z%22/%3E%3C/svg%3E");}.pdoc .alert.tip{color:#0a3622;background-color:#d1e7dd;border-color:#a3cfbb;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%230a3622%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M2%206a6%206%200%201%201%2010.174%204.31c-.203.196-.359.4-.453.619l-.762%201.769A.5.5%200%200%201%2010.5%2013a.5.5%200%200%201%200%201%20.5.5%200%200%201%200%201l-.224.447a1%201%200%200%201-.894.553H6.618a1%201%200%200%201-.894-.553L5.5%2015a.5.5%200%200%201%200-1%20.5.5%200%200%201%200-1%20.5.5%200%200%201-.46-.302l-.761-1.77a2%202%200%200%200-.453-.618A5.98%205.98%200%200%201%202%206m6-5a5%205%200%200%200-3.479%208.592c.263.254.514.564.676.941L5.83%2012h4.342l.632-1.467c.162-.377.413-.687.676-.941A5%205%200%200%200%208%201%22/%3E%3C/svg%3E");}.pdoc .alert.important{color:#055160;background-color:#cff4fc;border-color:#9eeaf9;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23055160%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M2%200a2%202%200%200%200-2%202v12a2%202%200%200%200%202%202h12a2%202%200%200%200%202-2V2a2%202%200%200%200-2-2zm6%204c.535%200%20.954.462.9.995l-.35%203.507a.552.552%200%200%201-1.1%200L7.1%204.995A.905.905%200%200%201%208%204m.002%206a1%201%200%201%201%200%202%201%201%200%200%201%200-2%22/%3E%3C/svg%3E");}.pdoc .alert.warning{color:#664d03;background-color:#fff3cd;border-color:#ffecb5;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23664d03%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M8.982%201.566a1.13%201.13%200%200%200-1.96%200L.165%2013.233c-.457.778.091%201.767.98%201.767h13.713c.889%200%201.438-.99.98-1.767L8.982%201.566zM8%205c.535%200%20.954.462.9.995l-.35%203.507a.552.552%200%200%201-1.1%200L7.1%205.995A.905.905%200%200%201%208%205zm.002%206a1%201%200%201%201%200%202%201%201%200%200%201%200-2z%22/%3E%3C/svg%3E");}.pdoc .alert.caution{color:#842029;background-color:#f8d7da;border-color:#f5c2c7;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23842029%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M11.46.146A.5.5%200%200%200%2011.107%200H4.893a.5.5%200%200%200-.353.146L.146%204.54A.5.5%200%200%200%200%204.893v6.214a.5.5%200%200%200%20.146.353l4.394%204.394a.5.5%200%200%200%20.353.146h6.214a.5.5%200%200%200%20.353-.146l4.394-4.394a.5.5%200%200%200%20.146-.353V4.893a.5.5%200%200%200-.146-.353zM8%204c.535%200%20.954.462.9.995l-.35%203.507a.552.552%200%200%201-1.1%200L7.1%204.995A.905.905%200%200%201%208%204m.002%206a1%201%200%201%201%200%202%201%201%200%200%201%200-2%22/%3E%3C/svg%3E");}.pdoc .alert.danger{color:#842029;background-color:#f8d7da;border-color:#f5c2c7;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23842029%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M5.52.359A.5.5%200%200%201%206%200h4a.5.5%200%200%201%20.474.658L8.694%206H12.5a.5.5%200%200%201%20.395.807l-7%209a.5.5%200%200%201-.873-.454L6.823%209.5H3.5a.5.5%200%200%201-.48-.641l2.5-8.5z%22/%3E%3C/svg%3E");}.pdoc .visually-hidden{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0, 0, 0, 0) !important;white-space:nowrap !important;border:0 !important;}.pdoc h1, .pdoc h2, .pdoc h3{font-weight:300;margin:.3em 0;padding:.2em 0;}.pdoc > section:not(.module-info) h1{font-size:1.5rem;font-weight:500;}.pdoc > section:not(.module-info) h2{font-size:1.4rem;font-weight:500;}.pdoc > section:not(.module-info) h3{font-size:1.3rem;font-weight:500;}.pdoc > section:not(.module-info) h4{font-size:1.2rem;}.pdoc > section:not(.module-info) h5{font-size:1.1rem;}.pdoc a{text-decoration:none;color:var(--link);}.pdoc a:hover{color:var(--link-hover);}.pdoc blockquote{margin-left:2rem;}.pdoc pre{border-top:1px solid var(--accent2);border-bottom:1px solid var(--accent2);margin-top:0;margin-bottom:1em;padding:.5rem 0 .5rem .5rem;overflow-x:auto;background-color:var(--code);}.pdoc code{color:var(--text);padding:.2em .4em;margin:0;font-size:85%;background-color:var(--accent);border-radius:6px;}.pdoc a > code{color:inherit;}.pdoc pre > code{display:inline-block;font-size:inherit;background:none;border:none;padding:0;}.pdoc > section:not(.module-info){margin-bottom:1.5rem;}.pdoc .modulename{margin-top:0;font-weight:bold;}.pdoc .modulename a{color:var(--link);transition:100ms all;}.pdoc .git-button{float:right;border:solid var(--link) 1px;}.pdoc .git-button:hover{background-color:var(--link);color:var(--pdoc-background);}.view-source-toggle-state,.view-source-toggle-state ~ .pdoc-code{display:none;}.view-source-toggle-state:checked ~ .pdoc-code{display:block;}.view-source-button{display:inline-block;float:right;font-size:.75rem;line-height:1.5rem;color:var(--muted);padding:0 .4rem 0 1.3rem;cursor:pointer;text-indent:-2px;}.view-source-button > span{visibility:hidden;}.module-info .view-source-button{float:none;display:flex;justify-content:flex-end;margin:-1.2rem .4rem -.2rem 0;}.view-source-button::before{position:absolute;content:"View Source";display:list-item;list-style-type:disclosure-closed;}.view-source-toggle-state:checked ~ .attr .view-source-button::before,.view-source-toggle-state:checked ~ .view-source-button::before{list-style-type:disclosure-open;}.pdoc .docstring{margin-bottom:1.5rem;}.pdoc section:not(.module-info) .docstring{margin-left:clamp(0rem, 5vw - 2rem, 1rem);}.pdoc .docstring .pdoc-code{margin-left:1em;margin-right:1em;}.pdoc h1:target,.pdoc h2:target,.pdoc h3:target,.pdoc h4:target,.pdoc h5:target,.pdoc h6:target,.pdoc .pdoc-code > pre > span:target{background-color:var(--active);box-shadow:-1rem 0 0 0 var(--active);}.pdoc .pdoc-code > pre > span:target{display:block;}.pdoc div:target > .attr,.pdoc section:target > .attr,.pdoc dd:target > a{background-color:var(--active);}.pdoc *{scroll-margin:2rem;}.pdoc .pdoc-code .linenos{user-select:none;}.pdoc .attr:hover{filter:contrast(0.95);}.pdoc section, .pdoc .classattr{position:relative;}.pdoc .headerlink{--width:clamp(1rem, 3vw, 2rem);position:absolute;top:0;left:calc(0rem - var(--width));transition:all 100ms ease-in-out;opacity:0;}.pdoc .headerlink::before{content:"#";display:block;text-align:center;width:var(--width);height:2.3rem;line-height:2.3rem;font-size:1.5rem;}.pdoc .attr:hover ~ .headerlink,.pdoc *:target > .headerlink,.pdoc .headerlink:hover{opacity:1;}.pdoc .attr{display:block;margin:.5rem 0 .5rem;padding:.4rem .4rem .4rem 1rem;background-color:var(--accent);overflow-x:auto;}.pdoc .classattr{margin-left:2rem;}.pdoc .decorator-deprecated{color:#842029;}.pdoc .decorator-deprecated ~ span{filter:grayscale(1) opacity(0.8);}.pdoc .name{color:var(--name);font-weight:bold;}.pdoc .def{color:var(--def);font-weight:bold;}.pdoc .signature{background-color:transparent;}.pdoc .param, .pdoc .return-annotation{white-space:pre;}.pdoc .signature.multiline .param{display:block;}.pdoc .signature.condensed .param{display:inline-block;}.pdoc .annotation{color:var(--annotation);}.pdoc .view-value-toggle-state,.pdoc .view-value-toggle-state ~ .default_value{display:none;}.pdoc .view-value-toggle-state:checked ~ .default_value{display:inherit;}.pdoc .view-value-button{font-size:.5rem;vertical-align:middle;border-style:dashed;margin-top:-0.1rem;}.pdoc .view-value-button:hover{background:white;}.pdoc .view-value-button::before{content:"show";text-align:center;width:2.2em;display:inline-block;}.pdoc .view-value-toggle-state:checked ~ .view-value-button::before{content:"hide";}.pdoc .inherited{margin-left:2rem;}.pdoc .inherited dt{font-weight:700;}.pdoc .inherited dt, .pdoc .inherited dd{display:inline;margin-left:0;margin-bottom:.5rem;}.pdoc .inherited dd:not(:last-child):after{content:", ";}.pdoc .inherited .class:before{content:"class ";}.pdoc .inherited .function a:after{content:"()";}.pdoc .search-result .docstring{overflow:auto;max-height:25vh;}.pdoc .search-result.focused > .attr{background-color:var(--active);}.pdoc .attribution{margin-top:2rem;display:block;opacity:0.5;transition:all 200ms;filter:grayscale(100%);}.pdoc .attribution:hover{opacity:1;filter:grayscale(0%);}.pdoc .attribution img{margin-left:5px;height:27px;vertical-align:bottom;width:50px;transition:all 200ms;}.pdoc table{display:block;width:max-content;max-width:100%;overflow:auto;margin-bottom:1rem;}.pdoc table th{font-weight:600;}.pdoc table th, .pdoc table td{padding:6px 13px;border:1px solid var(--accent2);}</style>
+    <style>/*! custom.css */</style></head>
+<body>
+    <nav class="pdoc">
+        <label id="navtoggle" for="togglestate" class="pdoc-button"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke-linecap='round' stroke="currentColor" stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg></label>
+        <input id="togglestate" type="checkbox" aria-hidden="true" tabindex="-1">
+        <div>            <a class="pdoc-button module-list-button" href="../agents.html">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z"/>
+  <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
+</svg>                &nbsp;agents</a>
+
+
+
+
+
+            <h2>API Documentation</h2>
+                <ul class="memberlist">
+            <li>
+                    <a class="variable" href="#MAX_REPAIR_ATTEMPTS">MAX_REPAIR_ATTEMPTS</a>
+            </li>
+            <li>
+                    <a class="variable" href="#REPLY_ATTEMPTS">REPLY_ATTEMPTS</a>
+            </li>
+            <li>
+                    <a class="variable" href="#CORRECTION_NOTE">CORRECTION_NOTE</a>
+            </li>
+            <li>
+                    <a class="variable" href="#REPORT_PATH">REPORT_PATH</a>
+            </li>
+            <li>
+                    <a class="variable" href="#PARTIAL_END_REASONS">PARTIAL_END_REASONS</a>
+            </li>
+            <li>
+                    <a class="variable" href="#TIMEOUT_TEST_ID">TIMEOUT_TEST_ID</a>
+            </li>
+            <li>
+                    <a class="variable" href="#CONSTITUTION_RULES">CONSTITUTION_RULES</a>
+            </li>
+            <li>
+                    <a class="variable" href="#TEST_FILE_SCHEMA">TEST_FILE_SCHEMA</a>
+            </li>
+            <li>
+                    <a class="variable" href="#WRITE_TESTS_FORMAT">WRITE_TESTS_FORMAT</a>
+            </li>
+            <li>
+                    <a class="variable" href="#DISPUTES_FORMAT">DISPUTES_FORMAT</a>
+            </li>
+            <li>
+                    <a class="variable" href="#REVIEW_FINDING_SCHEMA">REVIEW_FINDING_SCHEMA</a>
+            </li>
+            <li>
+                    <a class="variable" href="#REVIEW_FORMAT">REVIEW_FORMAT</a>
+            </li>
+            <li>
+                    <a class="variable" href="#QA_SYSTEM_PROMPT">QA_SYSTEM_PROMPT</a>
+            </li>
+            <li>
+                    <a class="class" href="#QAStepError">QAStepError</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#QAStepError.__init__">QAStepError</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAStepError.failure">failure</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#QAReplyRejected">QAReplyRejected</a>
+                            <ul class="memberlist">
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#QAConfig">QAConfig</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#QAConfig.__init__">QAConfig</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAConfig.model">model</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAConfig.effort">effort</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAConfig.test_timeout_seconds">test_timeout_seconds</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAConfig.repair_attempts">repair_attempts</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAConfig.use_fallbacks">use_fallbacks</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAConfig.sandbox_image">sandbox_image</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAConfig.warnings">warnings</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#QAConfig.from_env">from_env</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#QAIterationResult">QAIterationResult</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#QAIterationResult.__init__">QAIterationResult</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAIterationResult.test_run">test_run</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAIterationResult.findings">findings</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAIterationResult.disputes">disputes</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAIterationResult.test_changes">test_changes</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAIterationResult.test_suite">test_suite</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAIterationResult.verdict">verdict</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAIterationResult.usage">usage</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAIterationResult.error">error</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAIterationResult.failure">failure</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#QAIterationResult.to_dict">to_dict</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="function" href="#empty_test_run">empty_test_run</a>
+            </li>
+            <li>
+                    <a class="class" href="#QAAgent">QAAgent</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#QAAgent.__init__">QAAgent</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#QAAgent.config">config</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#QAAgent.attach">attach</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#QAAgent.run_iteration">run_iteration</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#QAAgent.final_report">final_report</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="function" href="#build_qa_request">build_qa_request</a>
+            </li>
+            <li>
+                    <a class="function" href="#interface_summary">interface_summary</a>
+            </li>
+            <li>
+                    <a class="function" href="#raw_finding_id">raw_finding_id</a>
+            </li>
+            <li>
+                    <a class="function" href="#normalise_findings">normalise_findings</a>
+            </li>
+            <li>
+                    <a class="function" href="#tamper_finding">tamper_finding</a>
+            </li>
+            <li>
+                    <a class="function" href="#apply_lifecycle">apply_lifecycle</a>
+            </li>
+            <li>
+                    <a class="function" href="#verdict_for">verdict_for</a>
+            </li>
+            <li>
+                    <a class="function" href="#build_report">build_report</a>
+            </li>
+            <li>
+                    <a class="function" href="#render_report">render_report</a>
+            </li>
+            <li>
+                    <a class="function" href="#render_spec">render_spec</a>
+            </li>
+            <li>
+                    <a class="function" href="#render_files">render_files</a>
+            </li>
+            <li>
+                    <a class="function" href="#render_test_run">render_test_run</a>
+            </li>
+            <li>
+                    <a class="function" href="#all_criteria">all_criteria</a>
+            </li>
+            <li>
+                    <a class="function" href="#check_test_files">check_test_files</a>
+            </li>
+            <li>
+                    <a class="function" href="#check_review">check_review</a>
+            </li>
+            <li>
+                    <a class="function" href="#checked_test_path">checked_test_path</a>
+            </li>
+    </ul>
+
+
+
+        <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev" target="_blank">
+            built with <span class="visually-hidden">pdoc</span><img
+                alt="pdoc logo"
+                src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20role%3D%22img%22%20aria-label%3D%22pdoc%20logo%22%20width%3D%22300%22%20height%3D%22160%22%20viewBox%3D%220%200%20150%2080%22%3E%3Ctitle%3Epdoc%3C/title%3E%3Cpath%20d%3D%22M132.316%2048.886c.276-4.679%202.342-6.698%204.409-7.982s4.27-1.165%206.751-1.055c1.586.07%203.044.156%204.222-.482%201.142-.619%202.026-1.932%202.162-3.739.268-3.576-1.929-5.368-5.006-5.551s-7.599.524-10.517%201.606c-4.455%201.652-8.588%206.606-9.552%208.992s-2.342%206.193-1.745%2010.873%202.664%209.221%205.878%2011.79%205.878%203.808%2010.103%204.312%203.444.229%206.062.229%205.006-2.202%204.914-4.909-2.296-5.001-4.501-4.863-3.077.505-5.281.229-7.715-2.064-7.899-9.451z%22%20fill%3D%22%23198754%22/%3E%3Ccircle%20cx%3D%22101.504%22%20cy%3D%2248.943%22%20r%3D%2214.208%22%20fill%3D%22none%22%20stroke%3D%22%23198754%22%20stroke-width%3D%229.354%22/%3E%3Cpath%20d%3D%22M87.81.002c-3.637.065-5.001.454-7.014%201.232s-3.443%201.363-6.3%204.282c-1.723%201.76-3.148%205.019-3.776%207.329-.413%201.521-.316%202.63-.316%202.63l-.195%2034.612c.065%205.774-6.755%208.305-9.612%208.37s-9.678-1.038-9.743-9.408%207.128-9.521%208.362-9.521c1.413-.13%202.526-.021%203.718-.016%202.071.009%204.157-.778%204.092-4.671s-4.157-4.736-4.157-4.736c-6.3-.843-11.43%202.206-11.43%202.206S40.917%2038.15%2041.372%2049.634%2051.568%2068.19%2061.311%2068.125s18.316-7.007%2018.445-17.193l.13-22.772c.046-2.291%202.683-3.644%204.476-4.203.745-.232%201.694-.274%201.694-.274l10.457-.13s4.871-.324%207.729-3.114%204.352-6.294%204.352-6.294.974-3.049.13-4.606-.195-1.233-2.792-3.309-8.573-4.477-8.573-4.477S91.447-.063%2087.81.002zM0%2047.169l.065%2028.417S0%2080.127%204.481%2079.997s5.072-3.866%205.049-4.152l-.113-28.482s1.624-7.656%209.937-7.721%2010.002%206.942%2010.002%208.499-.909%2010.51-9.093%2010.51c-.948%200-2.99-.567-4.145-.272-3.919%201-3.194%204.554-3.194%204.554s.065%205.061%207.404%204.996%2018.575-6.034%2018.575-19.074S26.953%2030.04%2019.549%2029.91%201.234%2035.296%200%2047.169z%22%20fill%3D%22%23198754%22/%3E%3Cg%20transform%3D%22matrix%28.325601%200%200%20.325256%20-10.32669%20-45.802786%29%22%3E%3Ccircle%20cx%3D%22297.554%22%20cy%3D%22172.286%22%20r%3D%2216.5%22%20fill%3D%22%23fff%22/%3E%3Cellipse%20cx%3D%22297.709%22%20cy%3D%22172.642%22%20rx%3D%2211.071%22%20ry%3D%2210.871%22%20fill%3D%22%23105a48%22/%3E%3Ccircle%20cx%3D%22304.104%22%20cy%3D%22167.667%22%20r%3D%224.5%22%20fill%3D%22%23fff%22/%3E%3C/g%3E%3Cpath%20d%3D%22M94.661%2017.032l.893-1.476s.99.714%201.916.925%201.575.114%202.955.114l14.565-.162c1.283-.032%203.085-.762%203.02-3.293s-.373-3.503-.373-3.503l1.283-.487s.52.503.877%201.573.309%201.995.292%202.66-.227%201.541-.227%201.541%201.564-.308%202.359-1.038.823-.779%201.489-1.508.812-.86.812-.86.552-.13.877.26.341.957.065%201.46-1.672%202.206-3.247%203.066-2.76%201.427-3.929%201.768-3.848.73-7.063.714l-10.944-.114s-2.143-.081-3.02-.373-2.241-.973-2.598-1.265z%22%20fill%3D%22%23d36d49%22/%3E%3Cg%20fill%3D%22%23105a48%22%3E%3Cellipse%20cx%3D%2293.052%22%20cy%3D%2243.567%22%20rx%3D%22.869%22%20ry%3D%221.014%22%20transform%3D%22rotate%28341.022%29%22/%3E%3Cellipse%20cx%3D%22104.3%22%20cy%3D%22-16.184%22%20rx%3D%22.865%22%20ry%3D%221.009%22%20transform%3D%22rotate%2814.786%29%22/%3E%3C/g%3E%3C/svg%3E"/>
+        </a>
+</div>
+    </nav>
+    <main class="pdoc">
+            <section class="module-info">
+                    <h1 class="modulename">
+<a href="./../agents.html">agents</a><wbr>.qa_agent    </h1>
+
+                        <div class="docstring"><p>QA &amp; Debugger Agent: writes and runs real pytest tests, reviews the code, reports findings.</p>
+
+<p>One QA iteration is a fixed pipeline, not an open-ended agent loop (research R8):
+write tests from the spec and the program's public interface only, run them in the
+network-less sandbox, repair a suite that does not load, then review the full code
+with the results and return a normalised findings list (the fix instruction list)
+and a verdict worked out in code. Every file read and write goes through the MCP
+file-tool server. The team reaches this agent only through its A2A endpoint, and this
+module never imports the Coder (SC-110). See specs/002-qa-feedback-loop-mcp/.</p>
+</div>
+
+                
+                
+                
+            </section>
+                <section id="MAX_REPAIR_ATTEMPTS">
+                    <div class="attr variable">
+            <span class="name">MAX_REPAIR_ATTEMPTS</span>        =
+<span class="default_value">3</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MAX_REPAIR_ATTEMPTS"></a>
+    
+    
+
+                </section>
+                <section id="REPLY_ATTEMPTS">
+                    <div class="attr variable">
+            <span class="name">REPLY_ATTEMPTS</span>        =
+<span class="default_value">2</span>
+
+        
+    </div>
+    <a class="headerlink" href="#REPLY_ATTEMPTS"></a>
+    
+            <div class="docstring"><p>Tries per structured QA reply: the first answer, plus one corrected answer after a
+rejection. A single paraphrased criterion or cut-off reply used to end the whole
+iteration (baseline benchmark 2026-10-20: 6 of 10 runs).</p>
+</div>
+
+
+                </section>
+                <section id="CORRECTION_NOTE">
+                    <div class="attr variable">
+            <span class="name">CORRECTION_NOTE</span>        =
+<input id="CORRECTION_NOTE-view-value" class="view-value-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+            <label class="view-value-button pdoc-button" for="CORRECTION_NOTE-view-value"></label><span class="default_value">&#39;Your previous reply was rejected: {reason}\nReply again with the complete, corrected answer. Copy every criterion character for character from the specification above, put every test file under tests/ with a .py name, and keep the reply short enough to finish: write fewer or shorter test files if needed.&#39;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#CORRECTION_NOTE"></a>
+    
+    
+
+                </section>
+                <section id="REPORT_PATH">
+                    <div class="attr variable">
+            <span class="name">REPORT_PATH</span>        =
+<span class="default_value">&#39;.qa/report.md&#39;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#REPORT_PATH"></a>
+    
+    
+
+                </section>
+                <section id="PARTIAL_END_REASONS">
+                    <div class="attr variable">
+            <span class="name">PARTIAL_END_REASONS</span>        =
+<span class="default_value">(&#39;interrupted&#39;, &#39;budget_exceeded&#39;, &#39;dependency_unavailable&#39;)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PARTIAL_END_REASONS"></a>
+    
+            <div class="docstring"><p>Runs that stopped before QA could finish: their report says it is partial.</p>
+</div>
+
+
+                </section>
+                <section id="TIMEOUT_TEST_ID">
+                    <div class="attr variable">
+            <span class="name">TIMEOUT_TEST_ID</span>        =
+<span class="default_value">&#39;&lt;timeout&gt;&#39;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TIMEOUT_TEST_ID"></a>
+    
+    
+
+                </section>
+                <section id="CONSTITUTION_RULES">
+                    <div class="attr variable">
+            <span class="name">CONSTITUTION_RULES</span>        =
+<input id="CONSTITUTION_RULES-view-value" class="view-value-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+            <label class="view-value-button pdoc-button" for="CONSTITUTION_RULES-view-value"></label><span class="default_value">(&#39;intent-revealing-names&#39;, &#39;function-does-one-thing&#39;, &#39;public-api-type-hints-and-docstrings&#39;, &#39;comments-explain-why&#39;, &#39;no-commented-out-code&#39;, &#39;explicit-error-handling&#39;, &#39;extract-triplicated-logic&#39;, &#39;python-3.12-only&#39;, &#39;pep8-pep257&#39;, &#39;import-grouping&#39;, &#39;no-wildcard-imports&#39;, &#39;no-hardcoded-secrets&#39;, &#39;main-guard&#39;)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#CONSTITUTION_RULES"></a>
+    
+    
+
+                </section>
+                <section id="TEST_FILE_SCHEMA">
+                    <div class="attr variable">
+            <span class="name">TEST_FILE_SCHEMA</span>        =
+<input id="TEST_FILE_SCHEMA-view-value" class="view-value-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+            <label class="view-value-button pdoc-button" for="TEST_FILE_SCHEMA-view-value"></label><span class="default_value">{&#39;type&#39;: &#39;object&#39;, &#39;properties&#39;: {&#39;path&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;content&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;criteria&#39;: {&#39;type&#39;: &#39;array&#39;, &#39;items&#39;: {&#39;type&#39;: &#39;string&#39;}}}, &#39;required&#39;: [&#39;path&#39;, &#39;content&#39;, &#39;criteria&#39;], &#39;additionalProperties&#39;: False}</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TEST_FILE_SCHEMA"></a>
+    
+    
+
+                </section>
+                <section id="WRITE_TESTS_FORMAT">
+                    <div class="attr variable">
+            <span class="name">WRITE_TESTS_FORMAT</span>        =
+<input id="WRITE_TESTS_FORMAT-view-value" class="view-value-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+            <label class="view-value-button pdoc-button" for="WRITE_TESTS_FORMAT-view-value"></label><span class="default_value">{&#39;type&#39;: &#39;object&#39;, &#39;properties&#39;: {&#39;test_files&#39;: {&#39;type&#39;: &#39;array&#39;, &#39;items&#39;: {&#39;type&#39;: &#39;object&#39;, &#39;properties&#39;: {&#39;path&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;content&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;criteria&#39;: {&#39;type&#39;: &#39;array&#39;, &#39;items&#39;: {&#39;type&#39;: &#39;string&#39;}}}, &#39;required&#39;: [&#39;path&#39;, &#39;content&#39;, &#39;criteria&#39;], &#39;additionalProperties&#39;: False}}, &#39;notes&#39;: {&#39;type&#39;: &#39;string&#39;}}, &#39;required&#39;: [&#39;test_files&#39;, &#39;notes&#39;], &#39;additionalProperties&#39;: False}</span>
+
+        
+    </div>
+    <a class="headerlink" href="#WRITE_TESTS_FORMAT"></a>
+    
+    
+
+                </section>
+                <section id="DISPUTES_FORMAT">
+                    <div class="attr variable">
+            <span class="name">DISPUTES_FORMAT</span>        =
+<input id="DISPUTES_FORMAT-view-value" class="view-value-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+            <label class="view-value-button pdoc-button" for="DISPUTES_FORMAT-view-value"></label><span class="default_value">{&#39;type&#39;: &#39;object&#39;, &#39;properties&#39;: {&#39;decisions&#39;: {&#39;type&#39;: &#39;array&#39;, &#39;items&#39;: {&#39;type&#39;: &#39;object&#39;, &#39;properties&#39;: {&#39;finding_id&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;decision&#39;: {&#39;type&#39;: &#39;string&#39;, &#39;enum&#39;: [&#39;keep&#39;, &#39;correct&#39;]}, &#39;reason&#39;: {&#39;type&#39;: &#39;string&#39;}}, &#39;required&#39;: [&#39;finding_id&#39;, &#39;decision&#39;, &#39;reason&#39;], &#39;additionalProperties&#39;: False}}, &#39;corrected_files&#39;: {&#39;type&#39;: &#39;array&#39;, &#39;items&#39;: {&#39;type&#39;: &#39;object&#39;, &#39;properties&#39;: {&#39;path&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;content&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;criteria&#39;: {&#39;type&#39;: &#39;array&#39;, &#39;items&#39;: {&#39;type&#39;: &#39;string&#39;}}}, &#39;required&#39;: [&#39;path&#39;, &#39;content&#39;, &#39;criteria&#39;], &#39;additionalProperties&#39;: False}}}, &#39;required&#39;: [&#39;decisions&#39;, &#39;corrected_files&#39;], &#39;additionalProperties&#39;: False}</span>
+
+        
+    </div>
+    <a class="headerlink" href="#DISPUTES_FORMAT"></a>
+    
+    
+
+                </section>
+                <section id="REVIEW_FINDING_SCHEMA">
+                    <div class="attr variable">
+            <span class="name">REVIEW_FINDING_SCHEMA</span>        =
+<input id="REVIEW_FINDING_SCHEMA-view-value" class="view-value-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+            <label class="view-value-button pdoc-button" for="REVIEW_FINDING_SCHEMA-view-value"></label><span class="default_value">{&#39;type&#39;: &#39;object&#39;, &#39;properties&#39;: {&#39;kind&#39;: {&#39;type&#39;: &#39;string&#39;, &#39;enum&#39;: [&#39;failing_test&#39;, &#39;bug&#39;, &#39;style&#39;]}, &#39;rule&#39;: {&#39;type&#39;: &#39;string&#39;, &#39;enum&#39;: [&#39;&#39;, &#39;intent-revealing-names&#39;, &#39;function-does-one-thing&#39;, &#39;public-api-type-hints-and-docstrings&#39;, &#39;comments-explain-why&#39;, &#39;no-commented-out-code&#39;, &#39;explicit-error-handling&#39;, &#39;extract-triplicated-logic&#39;, &#39;python-3.12-only&#39;, &#39;pep8-pep257&#39;, &#39;import-grouping&#39;, &#39;no-wildcard-imports&#39;, &#39;no-hardcoded-secrets&#39;, &#39;main-guard&#39;]}, &#39;file&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;location&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;problem&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;expected&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;likely_cause&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;fix_instruction&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;test_ids&#39;: {&#39;type&#39;: &#39;array&#39;, &#39;items&#39;: {&#39;type&#39;: &#39;string&#39;}}, &#39;same_as&#39;: {&#39;type&#39;: &#39;string&#39;}}, &#39;required&#39;: [&#39;kind&#39;, &#39;rule&#39;, &#39;file&#39;, &#39;location&#39;, &#39;problem&#39;, &#39;expected&#39;, &#39;likely_cause&#39;, &#39;fix_instruction&#39;, &#39;test_ids&#39;, &#39;same_as&#39;], &#39;additionalProperties&#39;: False}</span>
+
+        
+    </div>
+    <a class="headerlink" href="#REVIEW_FINDING_SCHEMA"></a>
+    
+    
+
+                </section>
+                <section id="REVIEW_FORMAT">
+                    <div class="attr variable">
+            <span class="name">REVIEW_FORMAT</span>        =
+<input id="REVIEW_FORMAT-view-value" class="view-value-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+            <label class="view-value-button pdoc-button" for="REVIEW_FORMAT-view-value"></label><span class="default_value">{&#39;type&#39;: &#39;object&#39;, &#39;properties&#39;: {&#39;findings&#39;: {&#39;type&#39;: &#39;array&#39;, &#39;items&#39;: {&#39;type&#39;: &#39;object&#39;, &#39;properties&#39;: {&#39;kind&#39;: {&#39;type&#39;: &#39;string&#39;, &#39;enum&#39;: [&#39;failing_test&#39;, &#39;bug&#39;, &#39;style&#39;]}, &#39;rule&#39;: {&#39;type&#39;: &#39;string&#39;, &#39;enum&#39;: [&#39;&#39;, &#39;intent-revealing-names&#39;, &#39;function-does-one-thing&#39;, &#39;public-api-type-hints-and-docstrings&#39;, &#39;comments-explain-why&#39;, &#39;no-commented-out-code&#39;, &#39;explicit-error-handling&#39;, &#39;extract-triplicated-logic&#39;, &#39;python-3.12-only&#39;, &#39;pep8-pep257&#39;, &#39;import-grouping&#39;, &#39;no-wildcard-imports&#39;, &#39;no-hardcoded-secrets&#39;, &#39;main-guard&#39;]}, &#39;file&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;location&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;problem&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;expected&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;likely_cause&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;fix_instruction&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;test_ids&#39;: {&#39;type&#39;: &#39;array&#39;, &#39;items&#39;: {&#39;type&#39;: &#39;string&#39;}}, &#39;same_as&#39;: {&#39;type&#39;: &#39;string&#39;}}, &#39;required&#39;: [&#39;kind&#39;, &#39;rule&#39;, &#39;file&#39;, &#39;location&#39;, &#39;problem&#39;, &#39;expected&#39;, &#39;likely_cause&#39;, &#39;fix_instruction&#39;, &#39;test_ids&#39;, &#39;same_as&#39;], &#39;additionalProperties&#39;: False}}, &#39;regression_tests&#39;: {&#39;type&#39;: &#39;array&#39;, &#39;items&#39;: {&#39;type&#39;: &#39;object&#39;, &#39;properties&#39;: {&#39;finding_index&#39;: {&#39;type&#39;: &#39;integer&#39;}, &#39;path&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;content&#39;: {&#39;type&#39;: &#39;string&#39;}, &#39;criteria&#39;: {&#39;type&#39;: &#39;array&#39;, &#39;items&#39;: {&#39;type&#39;: &#39;string&#39;}}}, &#39;required&#39;: [&#39;finding_index&#39;, &#39;path&#39;, &#39;content&#39;, &#39;criteria&#39;], &#39;additionalProperties&#39;: False}}, &#39;summary&#39;: {&#39;type&#39;: &#39;string&#39;}}, &#39;required&#39;: [&#39;findings&#39;, &#39;regression_tests&#39;, &#39;summary&#39;], &#39;additionalProperties&#39;: False}</span>
+
+        
+    </div>
+    <a class="headerlink" href="#REVIEW_FORMAT"></a>
+    
+    
+
+                </section>
+                <section id="QA_SYSTEM_PROMPT">
+                    <div class="attr variable">
+            <span class="name">QA_SYSTEM_PROMPT</span>        =
+<input id="QA_SYSTEM_PROMPT-view-value" class="view-value-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+            <label class="view-value-button pdoc-button" for="QA_SYSTEM_PROMPT-view-value"></label><span class="default_value">&#34;You are the QA &amp; Debugger Agent in an autonomous software team. The Coder Agent builds a Python program from a specification; you test it and review it.\n\nRules:\n- You own the tests/ folder. Write pytest tests there: plain assert, pytest.raises, pytest.mark.parametrize, and capsys or monkeypatch for command-line behavior. Use only pytest and the Python standard library. Tests run from the workspace root, so import the program&#39;s modules by name, and run command-line programs through their main function or with subprocess and sys.executable.\n- Expected values come only from the specification, never from what the code does. Name each test after the acceptance criterion it checks, and list that criterion, copied word for word, in the file&#39;s criteria.\n- Report every failing test. Diagnose the likely cause from the code and the failure.\n- Report code that special-cases the exact inputs or expected values of the tests, instead of doing what the specification asks, as a bug.\n- Report a style problem with a rule only when it breaks one of these MUST rules of the project constitution: intent-revealing-names, function-does-one-thing, public-api-type-hints-and-docstrings, comments-explain-why, no-commented-out-code, explicit-error-handling, extract-triplicated-logic, python-3.12-only, pep8-pep257, import-grouping, no-wildcard-imports, no-hardcoded-secrets, main-guard. Anything else is advisory: leave its rule empty.\n- Never ask questions. Decide, and say why in the finding.&#34;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QA_SYSTEM_PROMPT"></a>
+    
+    
+
+                </section>
+                <section id="QAStepError">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">QAStepError</span><wbr>(<span class="base">builtins.Exception</span>):
+
+        
+    </div>
+    <a class="headerlink" href="#QAStepError"></a>
+    
+            <div class="docstring"><p>One step of a QA iteration could not finish; the message says why.</p>
+
+<p><code><a href="#QAStepError.failure">failure</a></code> is set when the step failed because a dependency (the model service,
+MCP or the sandbox) could not be used (FR-209c).</p>
+</div>
+
+
+                            <div id="QAStepError.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">QAStepError</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">message</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">failure</span><span class="p">:</span> <span class="n"><a href="../orchestration/state.html#DependencyFailure">orchestration.state.DependencyFailure</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAStepError.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="QAStepError.failure" class="classattr">
+                                <div class="attr variable">
+            <span class="name">failure</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAStepError.failure"></a>
+    
+    
+
+                            </div>
+                </section>
+                <section id="QAReplyRejected">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">QAReplyRejected</span><wbr>(<span class="base"><a href="#QAStepError">QAStepError</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#QAReplyRejected"></a>
+    
+            <div class="docstring"><p>The model's reply was malformed, cut off or failed a check; QA may be asked again.</p>
+</div>
+
+
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#QAStepError">QAStepError</a></dt>
+                                <dd id="QAReplyRejected.__init__" class="function"><a href="#QAStepError.__init__">QAStepError</a></dd>
+                <dd id="QAReplyRejected.failure" class="variable"><a href="#QAStepError.failure">failure</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="QAConfig">
+                    <div class="attr class">
+                    <div class="decorator decorator-dataclass">@dataclass</div>
+
+    <span class="def">class</span>
+    <span class="name">QAConfig</span>:
+
+        
+    </div>
+    <a class="headerlink" href="#QAConfig"></a>
+    
+            <div class="docstring"><p>Settings for the QA Agent; <code><a href="#QAConfig.from_env">from_env</a></code> applies <code>QA_*</code> overrides.</p>
+</div>
+
+
+                            <div id="QAConfig.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">QAConfig</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'claude-haiku-5-5'</span>,</span><span class="param">	<span class="n">effort</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'high'</span>,</span><span class="param">	<span class="n">test_timeout_seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">60.0</span>,</span><span class="param">	<span class="n">repair_attempts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>,</span><span class="param">	<span class="n">use_fallbacks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">sandbox_image</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'multi-agent-sandbox:py3.12-pytest9.1.1'</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAConfig.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="QAConfig.model" class="classattr">
+                                <div class="attr variable">
+            <span class="name">model</span><span class="annotation">: str</span>        =
+<span class="default_value">&#39;claude-haiku-5-5&#39;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAConfig.model"></a>
+    
+    
+
+                            </div>
+                            <div id="QAConfig.effort" class="classattr">
+                                <div class="attr variable">
+            <span class="name">effort</span><span class="annotation">: str</span>        =
+<span class="default_value">&#39;high&#39;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAConfig.effort"></a>
+    
+    
+
+                            </div>
+                            <div id="QAConfig.test_timeout_seconds" class="classattr">
+                                <div class="attr variable">
+            <span class="name">test_timeout_seconds</span><span class="annotation">: float</span>        =
+<span class="default_value">60.0</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAConfig.test_timeout_seconds"></a>
+    
+    
+
+                            </div>
+                            <div id="QAConfig.repair_attempts" class="classattr">
+                                <div class="attr variable">
+            <span class="name">repair_attempts</span><span class="annotation">: int</span>        =
+<span class="default_value">2</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAConfig.repair_attempts"></a>
+    
+    
+
+                            </div>
+                            <div id="QAConfig.use_fallbacks" class="classattr">
+                                <div class="attr variable">
+            <span class="name">use_fallbacks</span><span class="annotation">: bool | None</span>        =
+<span class="default_value">None</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAConfig.use_fallbacks"></a>
+    
+            <div class="docstring"><p><code>None</code> means on if the model supports server-side refusal fallback.</p>
+</div>
+
+
+                            </div>
+                            <div id="QAConfig.sandbox_image" class="classattr">
+                                <div class="attr variable">
+            <span class="name">sandbox_image</span><span class="annotation">: str</span>        =
+<span class="default_value">&#39;multi-agent-sandbox:py3.12-pytest9.1.1&#39;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAConfig.sandbox_image"></a>
+    
+    
+
+                            </div>
+                            <div id="QAConfig.warnings" class="classattr">
+                                <div class="attr variable">
+            <span class="name">warnings</span><span class="annotation">: list[str]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAConfig.warnings"></a>
+    
+            <div class="docstring"><p>Settings the capability table could not check (an unknown model).</p>
+</div>
+
+
+                            </div>
+                            <div id="QAConfig.from_env" class="classattr">
+                                <div class="attr function">
+                    <div class="decorator decorator-classmethod">@classmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">from_env</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">cls</span></span><span class="return-annotation">) -> <span class="n"><a href="#QAConfig">QAConfig</a></span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAConfig.from_env"></a>
+    
+            <div class="docstring"><p>Build a config from defaults plus any <code>QA_*</code> environment variables.</p>
+
+<h6 id="raises">Raises:</h6>
+
+<ul>
+<li><strong>ValueError:</strong>  if a variable is malformed or out of range.</li>
+</ul>
+</div>
+
+
+                            </div>
+                </section>
+                <section id="QAIterationResult">
+                    <div class="attr class">
+                    <div class="decorator decorator-dataclass">@dataclass</div>
+
+    <span class="def">class</span>
+    <span class="name">QAIterationResult</span>:
+
+        
+    </div>
+    <a class="headerlink" href="#QAIterationResult"></a>
+    
+            <div class="docstring"><p>The outcome of one QA iteration (contracts/qa-agent-api.md).</p>
+</div>
+
+
+                            <div id="QAIterationResult.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">QAIterationResult</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">test_run</span><span class="p">:</span> <span class="n"><a href="../orchestration/state.html#TestRun">orchestration.state.TestRun</a></span>,</span><span class="param">	<span class="n">findings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n"><a href="../orchestration/state.html#QAFinding">orchestration.state.QAFinding</a></span><span class="p">]</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">factory</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">disputes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">factory</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">test_changes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n"><a href="../orchestration/state.html#TestChange">orchestration.state.TestChange</a></span><span class="p">]</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">factory</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">test_suite</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">factory</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">verdict</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'fix_needed'</span>,</span><span class="param">	<span class="n">usage</span><span class="p">:</span> <span class="n"><a href="../orchestration/state.html#TokenUsage">orchestration.state.TokenUsage</a></span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">factory</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">error</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">failure</span><span class="p">:</span> <span class="n"><a href="../orchestration/state.html#DependencyFailure">orchestration.state.DependencyFailure</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAIterationResult.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="QAIterationResult.test_run" class="classattr">
+                                <div class="attr variable">
+            <span class="name">test_run</span><span class="annotation">: <a href="../orchestration/state.html#TestRun">orchestration.state.TestRun</a></span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAIterationResult.test_run"></a>
+    
+    
+
+                            </div>
+                            <div id="QAIterationResult.findings" class="classattr">
+                                <div class="attr variable">
+            <span class="name">findings</span><span class="annotation">: list[<a href="../orchestration/state.html#QAFinding">orchestration.state.QAFinding</a>]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAIterationResult.findings"></a>
+    
+    
+
+                            </div>
+                            <div id="QAIterationResult.disputes" class="classattr">
+                                <div class="attr variable">
+            <span class="name">disputes</span><span class="annotation">: list[dict]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAIterationResult.disputes"></a>
+    
+    
+
+                            </div>
+                            <div id="QAIterationResult.test_changes" class="classattr">
+                                <div class="attr variable">
+            <span class="name">test_changes</span><span class="annotation">: list[<a href="../orchestration/state.html#TestChange">orchestration.state.TestChange</a>]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAIterationResult.test_changes"></a>
+    
+    
+
+                            </div>
+                            <div id="QAIterationResult.test_suite" class="classattr">
+                                <div class="attr variable">
+            <span class="name">test_suite</span><span class="annotation">: dict[str, str]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAIterationResult.test_suite"></a>
+    
+    
+
+                            </div>
+                            <div id="QAIterationResult.verdict" class="classattr">
+                                <div class="attr variable">
+            <span class="name">verdict</span><span class="annotation">: str</span>        =
+<span class="default_value">&#39;fix_needed&#39;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAIterationResult.verdict"></a>
+    
+    
+
+                            </div>
+                            <div id="QAIterationResult.usage" class="classattr">
+                                <div class="attr variable">
+            <span class="name">usage</span><span class="annotation">: <a href="../orchestration/state.html#TokenUsage">orchestration.state.TokenUsage</a></span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAIterationResult.usage"></a>
+    
+    
+
+                            </div>
+                            <div id="QAIterationResult.error" class="classattr">
+                                <div class="attr variable">
+            <span class="name">error</span><span class="annotation">: str | None</span>        =
+<span class="default_value">None</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAIterationResult.error"></a>
+    
+    
+
+                            </div>
+                            <div id="QAIterationResult.failure" class="classattr">
+                                <div class="attr variable">
+            <span class="name">failure</span><span class="annotation">: <a href="../orchestration/state.html#DependencyFailure">orchestration.state.DependencyFailure</a> | None</span>        =
+<span class="default_value">None</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAIterationResult.failure"></a>
+    
+    
+
+                            </div>
+                            <div id="QAIterationResult.to_dict" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">to_dict</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">dict</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAIterationResult.to_dict"></a>
+    
+            <div class="docstring"><p>Return a plain-JSON copy (the <code>qa-iteration</code> artifact's data).</p>
+</div>
+
+
+                            </div>
+                </section>
+                <section id="empty_test_run">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">empty_test_run</span><span class="signature pdoc-code condensed">(<span class="return-annotation">) -> <span class="n"><a href="../orchestration/state.html#TestRun">orchestration.state.TestRun</a></span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#empty_test_run"></a>
+    
+            <div class="docstring"><p>A run that never happened (used when QA fails before running any test).</p>
+</div>
+
+
+                </section>
+                <section id="QAAgent">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">QAAgent</span>:
+
+        
+    </div>
+    <a class="headerlink" href="#QAAgent"></a>
+    
+            <div class="docstring"><p>The QA &amp; Debugger Agent. Every iteration stands alone; state arrives in the context.</p>
+</div>
+
+
+                            <div id="QAAgent.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">QAAgent</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">config</span><span class="p">:</span> <span class="n"><a href="#QAConfig">QAConfig</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">client</span><span class="o">=</span><span class="kc">None</span>,</span><span class="param">	<span class="n">run_tests</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">run_pytest</span><span class="o">&gt;</span>,</span><span class="param">	file_tools=&lt;class &#x27;<a href="../tools/mcp_client.html#McpFileTools">tools.mcp_client.McpFileTools</a>&#x27;&gt;,</span><span class="param">	<span class="n">services</span><span class="p">:</span> <span class="n"><a href="../orchestration/services.html#RunServices">orchestration.services.RunServices</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAAgent.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="QAAgent.config" class="classattr">
+                                <div class="attr variable">
+            <span class="name">config</span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAAgent.config"></a>
+    
+    
+
+                            </div>
+                            <div id="QAAgent.attach" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">attach</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">services</span><span class="p">:</span> <span class="n"><a href="../orchestration/services.html#RunServices">orchestration.services.RunServices</a></span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAAgent.attach"></a>
+    
+            <div class="docstring"><p>Use <code>services</code> (the run's shared helpers) for every later call.</p>
+</div>
+
+
+                            </div>
+                            <div id="QAAgent.run_iteration" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">run_iteration</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">context</span><span class="p">:</span> <span class="n"><a href="../orchestration/state.html#QAContext">orchestration.state.QAContext</a></span></span><span class="return-annotation">) -> <span class="n"><a href="#QAIterationResult">QAIterationResult</a></span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAAgent.run_iteration"></a>
+    
+            <div class="docstring"><p>Run one QA iteration on the program in <code>context["workspace"]</code>.</p>
+
+<p>Model, reply, MCP and test-loading failures come back in <code>error</code> (with
+verdict <code>fix_needed</code>); they are never raised.</p>
+</div>
+
+
+                            </div>
+                            <div id="QAAgent.final_report" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">final_report</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">request</span><span class="p">:</span> <span class="n"><a href="../orchestration/state.html#FinalReportRequest">orchestration.state.FinalReportRequest</a></span></span><span class="return-annotation">) -> <span class="n"><a href="../orchestration/state.html#QAReport">orchestration.state.QAReport</a></span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#QAAgent.final_report"></a>
+    
+            <div class="docstring"><p>Summarise the run and write <code>.qa/report.md</code> through MCP (no model call).</p>
+
+<p>The session is not guarded: the report is the run's last, quick write, and it
+must be written even when the run is stopping (the guard refuses calls then).</p>
+</div>
+
+
+                            </div>
+                </section>
+                <section id="build_qa_request">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">build_qa_request</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">config</span><span class="p">:</span> <span class="n"><a href="#QAConfig">QAConfig</a></span>,</span><span class="param">	<span class="n">parts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>,</span><span class="param">	<span class="n">schema</span><span class="p">:</span> <span class="nb">dict</span>,</span><span class="param">	<span class="n">cache_ttl</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'off'</span></span><span class="return-annotation">) -> <span class="nb">dict</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#build_qa_request"></a>
+    
+            <div class="docstring"><p>Assemble the keyword arguments for one QA <code>beta.messages.create</code> call.</p>
+
+<p><code>parts</code> are the user message's sections: every part but the last repeats across
+an iteration's calls (spec, sources, tests) and is cache-marked; the last is this
+call's instruction (research R7).</p>
+</div>
+
+
+                </section>
+                <section id="interface_summary">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">interface_summary</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">sources</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#interface_summary"></a>
+    
+            <div class="docstring"><p>Describe each module's public interface without any function body (FR-102a).</p>
+</div>
+
+
+                </section>
+                <section id="raw_finding_id">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">raw_finding_id</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">item</span><span class="p">:</span> <span class="nb">dict</span>, </span><span class="param"><span class="n">index</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#raw_finding_id"></a>
+    
+            <div class="docstring"><p>The ID a review finding gets: its <code>same_as</code> ID, or <code>F&lt;iteration&gt;-&lt;index + 1&gt;</code>.</p>
+</div>
+
+
+                </section>
+                <section id="normalise_findings">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">normalise_findings</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">raw</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>,</span><span class="param">	<span class="n">test_run</span><span class="p">:</span> <span class="n"><a href="../orchestration/state.html#TestRun">orchestration.state.TestRun</a></span>,</span><span class="param">	<span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">previous</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n"><a href="../orchestration/state.html#QAFinding">orchestration.state.QAFinding</a></span><span class="p">]</span></span><span class="return-annotation">) -> <span class="nb">list</span><span class="p">[</span><span class="n"><a href="../orchestration/state.html#QAFinding">orchestration.state.QAFinding</a></span><span class="p">]</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#normalise_findings"></a>
+    
+            <div class="docstring"><p>Turn review findings into schema-valid <code>QAFinding</code>s (research R10).</p>
+
+<p>Severity is set here, not by the model: failing tests and bugs block, and a style
+problem blocks only when it cites a constitution MUST rule. Every failed or
+errored test (and a timeout) that no finding names gets one. Blocking first.</p>
+</div>
+
+
+                </section>
+                <section id="tamper_finding">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">tamper_finding</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>,</span><span class="param">	<span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">number</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n"><a href="../orchestration/state.html#QAFinding">orchestration.state.QAFinding</a></span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#tamper_finding"></a>
+    
+            <div class="docstring"><p>The blocking finding for test files changed outside QA (FR-111, research R5).</p>
+</div>
+
+
+                </section>
+                <section id="apply_lifecycle">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">apply_lifecycle</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">findings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n"><a href="../orchestration/state.html#QAFinding">orchestration.state.QAFinding</a></span><span class="p">]</span>,</span><span class="param">	<span class="n">previous</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n"><a href="../orchestration/state.html#QAFinding">orchestration.state.QAFinding</a></span><span class="p">]</span>,</span><span class="param">	<span class="n">disputes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n"><a href="../orchestration/state.html#Dispute">orchestration.state.Dispute</a></span><span class="p">]</span></span><span class="return-annotation">) -> <span class="nb">list</span><span class="p">[</span><span class="n"><a href="../orchestration/state.html#QAFinding">orchestration.state.QAFinding</a></span><span class="p">]</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#apply_lifecycle"></a>
+    
+            <div class="docstring"><p>Settle earlier findings: fixed if not reported again, withdrawn or kept by dispute.</p>
+
+<p>Returns this iteration's findings plus the earlier ones it settles, open blocking
+findings first (data-model "QAFinding" lifecycle).</p>
+</div>
+
+
+                </section>
+                <section id="verdict_for">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">verdict_for</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">test_run</span><span class="p">:</span> <span class="n"><a href="../orchestration/state.html#TestRun">orchestration.state.TestRun</a></span>,</span><span class="param">	<span class="n">findings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n"><a href="../orchestration/state.html#QAFinding">orchestration.state.QAFinding</a></span><span class="p">]</span>,</span><span class="param">	<span class="n">suite_ok</span><span class="p">:</span> <span class="nb">bool</span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#verdict_for"></a>
+    
+            <div class="docstring"><p><code>complete</code> only if the suite loaded and passed and nothing blocks (FR-106).</p>
+</div>
+
+
+                </section>
+                <section id="build_report">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">build_report</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">request</span><span class="p">:</span> <span class="n"><a href="../orchestration/state.html#FinalReportRequest">orchestration.state.FinalReportRequest</a></span></span><span class="return-annotation">) -> <span class="n"><a href="../orchestration/state.html#QAReport">orchestration.state.QAReport</a></span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#build_report"></a>
+    
+            <div class="docstring"><p>Build QA's final report from the run's iterations (research R14).</p>
+</div>
+
+
+                </section>
+                <section id="render_report">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">render_report</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">report</span><span class="p">:</span> <span class="n"><a href="../orchestration/state.html#QAReport">orchestration.state.QAReport</a></span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#render_report"></a>
+    
+            <div class="docstring"><p>Render the final report as Markdown for <code>.qa/report.md</code>.</p>
+</div>
+
+
+                </section>
+                <section id="render_spec">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">render_spec</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">spec</span><span class="p">:</span> <span class="nb">dict</span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#render_spec"></a>
+    
+            <div class="docstring"><p>Render the specification, with every acceptance criterion, for a QA prompt.</p>
+</div>
+
+
+                </section>
+                <section id="render_files">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">render_files</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">files</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#render_files"></a>
+    
+            <div class="docstring"><p>Render files for a prompt, each under a heading with its path.</p>
+</div>
+
+
+                </section>
+                <section id="render_test_run">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">render_test_run</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">test_run</span><span class="p">:</span> <span class="n"><a href="../orchestration/state.html#TestRun">orchestration.state.TestRun</a></span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#render_test_run"></a>
+    
+            <div class="docstring"><p>Summarise a test run for the review prompt.</p>
+</div>
+
+
+                </section>
+                <section id="all_criteria">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">all_criteria</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">spec</span><span class="p">:</span> <span class="nb">dict</span></span><span class="return-annotation">) -> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#all_criteria"></a>
+    
+            <div class="docstring"><p>Every acceptance criterion in the spec and its tasks, normalised for comparison.</p>
+</div>
+
+
+                </section>
+                <section id="check_test_files">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">check_test_files</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>, </span><span class="param"><span class="n">spec</span><span class="p">:</span> <span class="nb">dict</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#check_test_files"></a>
+    
+            <div class="docstring"><p>Check every test file in a reply before any is written.</p>
+
+<h6 id="raises">Raises:</h6>
+
+<ul>
+<li><strong>QAReplyRejected:</strong>  if a path is not a <code>.py</code> file inside <code>tests/</code>, or a listed
+criterion is not copied from the specification.</li>
+</ul>
+</div>
+
+
+                </section>
+                <section id="check_review">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">check_review</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span>, </span><span class="param"><span class="n">context</span><span class="p">:</span> <span class="n"><a href="../orchestration/state.html#QAContext">orchestration.state.QAContext</a></span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#check_review"></a>
+    
+            <div class="docstring"><p>Check a review reply, including its regression tests, before anything is written.</p>
+
+<h6 id="raises">Raises:</h6>
+
+<ul>
+<li><strong>QAReplyRejected:</strong>  if <code>same_as</code> names an unknown finding, a regression test points
+at no finding, or a regression test file fails <code><a href="#check_test_files">check_test_files</a></code>.</li>
+</ul>
+</div>
+
+
+                </section>
+                <section id="checked_test_path">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">checked_test_path</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">path</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#checked_test_path"></a>
+    
+            <div class="docstring"><p>Return <code>path</code> if it is a <code>.py</code> file inside <code>tests/</code>; otherwise raise.</p>
+
+<h6 id="raises">Raises:</h6>
+
+<ul>
+<li><strong>QAReplyRejected:</strong>  if the path leaves <code>tests/</code> or is not a <code>.py</code> file.</li>
+</ul>
+</div>
+
+
+                </section>
+    </main>
+</body>
+</html>
