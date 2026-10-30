@@ -70,7 +70,9 @@ FailureKind = Literal["temporary", "permanent"]
 CircuitState = Literal["closed", "open", "half_open"]
 ServedFrom = Literal["live", "cache"]
 AgentName = Literal["pm", "coder", "qa"]
-Stage = Literal["plan", "consolidate", "build", "reflect", "qa_review", "fix", "final_report", "team"]
+Stage = Literal[
+    "plan", "consolidate", "build", "reflect", "qa_review", "fix", "final_report", "team"
+]
 # Named EventSeverity because ``Severity`` already means a finding's severity.
 EventSeverity = Literal["debug", "info", "warning", "error"]
 

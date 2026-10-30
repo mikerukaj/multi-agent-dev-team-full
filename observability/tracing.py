@@ -17,7 +17,7 @@ becomes one warning.
 
 import threading
 import time
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Iterator, Mapping
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 
@@ -104,7 +104,7 @@ class Tracer:
     # Spans -------------------------------------------------------------------------
 
     @contextmanager
-    def root_span(self, run_id: str, metadata: dict):
+    def root_span(self, run_id: str, metadata: dict) -> Iterator["SpanResult"]:
         """The ``team-run`` root of one run attempt."""
         run = self._start("team-run", "chain", {"run_id": run_id}, {"run_id": run_id,
                                                                      **metadata}, root=True)
@@ -113,7 +113,7 @@ class Tracer:
             yield result
 
     @contextmanager
-    def agent_span(self, agent: str, invocation: str, **metadata):
+    def agent_span(self, agent: str, invocation: str, **metadata) -> Iterator["AgentSpanStats"]:
         """One agent invocation; yields its ``AgentSpanStats``.
 
         On exit the span gets ``agent_name``, ``token_count``, ``tool_calls`` and
@@ -137,7 +137,7 @@ class Tracer:
                     self.on_agent_end(stats)
 
     @contextmanager
-    def llm_span(self, model: str, inputs: dict):
+    def llm_span(self, model: str, inputs: dict) -> Iterator["SpanResult"]:
         """One model call; set ``result.outputs`` (incl. ``usage_metadata``) before exit."""
         run = self._start(f"llm:{model}", "llm", inputs,
                           {"ls_provider": "anthropic", "ls_model_name": model})
@@ -145,7 +145,7 @@ class Tracer:
             yield result
 
     @contextmanager
-    def tool_span(self, name: str, inputs: dict):
+    def tool_span(self, name: str, inputs: dict) -> Iterator["SpanResult"]:
         """One tool call; counted on the active agent span (and by ``on_tool_call``)."""
         stats = self.active_agent()
         if stats is not None:
@@ -193,7 +193,7 @@ class Tracer:
             return {}
 
     @contextmanager
-    def continue_from(self, headers: Mapping[str, str] | None):
+    def continue_from(self, headers: Mapping[str, str] | None) -> Iterator[None]:
         """Make spans opened on this thread children of the span ``headers`` came from.
 
         Missing or malformed headers start the spans with no parent (one warning).

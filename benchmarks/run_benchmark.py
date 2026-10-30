@@ -31,8 +31,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from agents.coder_agent import CoderAgent, CoderConfig
-from agents.pm_agent import PMAgent, PMConfig
 from agents.llm import LARGE_MODEL
+from agents.pm_agent import PMAgent, PMConfig
 from agents.qa_agent import QAAgent, QAConfig
 from cost.pricing import DEFAULT_PRICE_TABLE, load_price_table
 from orchestration.services import RunServices
@@ -185,7 +185,7 @@ def score(records: list[dict], partial: bool) -> dict:
     }
 
 
-def build_agents(chroma_path: Path):
+def build_agents(chroma_path: Path) -> tuple[PMAgent, CoderAgent, QAAgent]:
     """Build fresh PM, Coder and QA agents from the environment (the Coder with fresh memory)."""
     coder_config = replace(CoderConfig.from_env(), chroma_path=chroma_path)
     return PMAgent(PMConfig.from_env()), CoderAgent(coder_config), QAAgent(QAConfig.from_env())

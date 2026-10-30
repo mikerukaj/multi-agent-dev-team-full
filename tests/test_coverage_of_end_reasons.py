@@ -31,13 +31,20 @@ from tests.fakes.team_script import (
 from tests.test_never_crashes import failing
 
 RECOVERY_TESTS = {
-    "retry": "tests.test_resilience.GuardTests.test_one_429_then_success_returns_the_result_after_one_retry",
-    "restart": "tests.test_tool_resilience.McpRestartTests.test_a_killed_server_is_restarted_with_the_same_protections",
-    "breaker open": "tests.test_resilience.CircuitBreakerTests.test_an_open_circuit_fails_fast_without_calling",
-    "half-open": "tests.test_resilience.CircuitBreakerTests.test_only_one_half_open_trial_is_admitted_at_a_time",
-    "cache replay": "tests.test_model_caller.DegradationTests.test_an_open_circuit_serves_a_validated_cached_reply_at_no_cost",
-    "structured error": "tests.test_tool_resilience.SandboxRetryTests.test_a_sandbox_that_never_starts_gives_a_failure_and_a_tool_error",
-    "resume": "tests.test_resume.InterruptAndResumeTests.test_a_run_interrupted_in_any_stage_resumes_to_the_same_end",
+    "retry": ("tests.test_resilience.GuardTests."
+              "test_one_429_then_success_returns_the_result_after_one_retry"),
+    "restart": ("tests.test_tool_resilience.McpRestartTests."
+                "test_a_killed_server_is_restarted_with_the_same_protections"),
+    "breaker open": ("tests.test_resilience.CircuitBreakerTests."
+                     "test_an_open_circuit_fails_fast_without_calling"),
+    "half-open": ("tests.test_resilience.CircuitBreakerTests."
+                  "test_only_one_half_open_trial_is_admitted_at_a_time"),
+    "cache replay": ("tests.test_model_caller.DegradationTests."
+                     "test_an_open_circuit_serves_a_validated_cached_reply_at_no_cost"),
+    "structured error": ("tests.test_tool_resilience.SandboxRetryTests."
+                         "test_a_sandbox_that_never_starts_gives_a_failure_and_a_tool_error"),
+    "resume": ("tests.test_resume.InterruptAndResumeTests."
+               "test_a_run_interrupted_in_any_stage_resumes_to_the_same_end"),
 }
 
 

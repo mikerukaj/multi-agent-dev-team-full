@@ -25,7 +25,7 @@ DEFAULT_TTL_SECONDS = 86_400.0
 DEFAULT_DIRECTORY = Path(".cache/llm")
 
 
-def strip_cache_control(value):
+def strip_cache_control(value: object) -> object:
     """Return ``value`` without any ``cache_control`` key, at any depth."""
     if isinstance(value, dict):
         return {key: strip_cache_control(item) for key, item in value.items()

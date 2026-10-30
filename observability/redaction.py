@@ -34,7 +34,7 @@ class Redactor:
             if SECRET_NAME.search(name) and len(value) >= MIN_SECRET_LENGTH
         ])
 
-    def redact(self, value):
+    def redact(self, value: object) -> object:
         """Return a copy of ``value`` with every secret replaced.
 
         Strings are scrubbed; dicts, lists and tuples are walked; other values (numbers,

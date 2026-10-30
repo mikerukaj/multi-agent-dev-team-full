@@ -23,14 +23,14 @@ import anthropic
 from agents.llm import (
     EFFORT_LEVELS,
     MAX_TOKENS,
-    SMALL_MODEL,
-    check_model_settings,
-    fallbacks_from_env,
-    resolve_fallbacks,
     NOT_JSON,
+    SMALL_MODEL,
     ModelCaller,
     add_usage,
+    check_model_settings,
     failure_message,
+    fallbacks_from_env,
+    resolve_fallbacks,
     stable_blocks,
     system_blocks,
     with_fallbacks,
@@ -52,9 +52,9 @@ from orchestration.state import (
     TestRun,
     TokenUsage,
 )
+from orchestration.validation import first_problems
 from tools.mcp_client import McpFileTools, McpUnavailableError, failure_in
 from tools.python_exec import SANDBOX_IMAGE, SandboxUnavailableError, ensure_sandbox
-from orchestration.validation import first_problems
 from tools.test_runner import run_pytest
 
 MAX_REPAIR_ATTEMPTS = 3

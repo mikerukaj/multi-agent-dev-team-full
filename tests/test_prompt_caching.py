@@ -4,7 +4,6 @@ Real agents run on content-aware fake models, so the request bodies the model wo
 receive are recorded and checked.
 """
 
-import contextlib
 import json
 import tempfile
 import unittest

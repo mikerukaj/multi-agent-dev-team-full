@@ -13,9 +13,9 @@ from contextlib import redirect_stderr
 from pathlib import Path
 from unittest import mock
 
+from agents.qa_agent import build_report, render_report
 from orchestration.checkpoint import RunLock, read_final_record, run_dir
 from orchestration.services import RunServices
-from agents.qa_agent import build_report, render_report
 from orchestration.team import exit_code_for, install_signal_handlers, main
 from tests import TEST_ENV
 from tools import python_exec

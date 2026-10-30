@@ -27,7 +27,6 @@ from orchestration.team import (
 )
 from tests import TEST_ENV
 from tests.team_fakes import (
-    token_usage,
     FakeCoder,
     FakePMClient,
     FakeQA,
@@ -36,6 +35,7 @@ from tests.team_fakes import (
     regroup_payload,
     spec_payload,
     tasks_payload,
+    token_usage,
 )
 
 REQUIREMENT = "Build a temperature converter CLI"

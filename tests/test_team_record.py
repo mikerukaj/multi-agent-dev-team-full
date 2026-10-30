@@ -12,7 +12,6 @@ from agents.pm_agent import PMAgent, PMConfig
 from orchestration import team
 from orchestration.team import format_update, run_team
 from tests.team_fakes import (
-    token_usage,
     FakeCoder,
     FakePMClient,
     FakeQA,
@@ -20,6 +19,7 @@ from tests.team_fakes import (
     qa_result,
     regroup_payload,
     spec_payload,
+    token_usage,
 )
 from tools.python_exec import SandboxUnavailableError
 

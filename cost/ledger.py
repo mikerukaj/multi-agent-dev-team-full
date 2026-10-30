@@ -59,14 +59,17 @@ class UsageLedger:
             )
 
     def record_tool_call(self, agent: str) -> None:
+        """Count one tool call made by ``agent``."""
         with self._lock:
             self._entry(agent)["tool_calls"] += 1
 
     def record_error(self, agent: str) -> None:
+        """Count one failed model call made by ``agent``."""
         with self._lock:
             self._entry(agent)["errors"] += 1
 
     def add_duration(self, agent: str, milliseconds: int) -> None:
+        """Add ``milliseconds`` of wall-clock time to ``agent``'s total."""
         with self._lock:
             self._entry(agent)["duration_ms"] += milliseconds
 

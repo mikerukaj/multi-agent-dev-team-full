@@ -16,12 +16,12 @@ from agents.llm import (
     EFFORT_LEVELS,
     LARGE_MODEL,
     MAX_TOKENS,
-    check_model_settings,
-    fallbacks_from_env,
-    resolve_fallbacks,
     ModelCaller,
+    check_model_settings,
     failure_message,
+    fallbacks_from_env,
     output_problem,
+    resolve_fallbacks,
     system_blocks,
     with_fallbacks,
 )
@@ -343,9 +343,9 @@ def _flat_criteria(tasks: list[dict]) -> list[str]:
 
 
 def _validate_spec(data: dict) -> str | None:
-    for field in ("name", "description"):
-        if not data[field].strip():
-            return f"the spec has an empty {field}"
+    for key in ("name", "description"):
+        if not data[key].strip():
+            return f"the spec has an empty {key}"
     if not data["acceptance_criteria"]:
         return "the spec has no acceptance criteria"
     return validate_tasks(data["tasks"])

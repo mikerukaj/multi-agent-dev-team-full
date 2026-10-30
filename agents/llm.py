@@ -95,7 +95,7 @@ def cache_marker(ttl: str) -> dict | None:
     return {"type": "ephemeral"} if ttl == "5m" else {"type": "ephemeral", "ttl": ttl}
 
 
-def system_blocks(text: str, ttl: str):
+def system_blocks(text: str, ttl: str) -> str | list[dict]:
     """The ``system`` value: one cache-marked text block, or the plain text when off."""
     marker = cache_marker(ttl)
     return text if marker is None else [{"type": "text", "text": text, "cache_control": marker}]

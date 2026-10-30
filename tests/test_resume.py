@@ -77,7 +77,9 @@ class ResumeTestCase(unittest.TestCase):
         self.addCleanup(stack.close)
 
     def services(self, run_id: str | None = None) -> RunServices:
-        return RunServices.create(run_id, env=TEST_ENV, sleep=lambda delay: None, response_cache=None)
+        return RunServices.create(
+            run_id, env=TEST_ENV, sleep=lambda delay: None, response_cache=None
+        )
 
     def models(self, trigger=None, services=None) -> tuple[TeamModel, ...]:
         models = [TeamModel(task_count=TASKS), TeamModel(task_count=TASKS),

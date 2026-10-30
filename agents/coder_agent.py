@@ -32,16 +32,16 @@ from langgraph.graph import END, START, StateGraph
 from agents.llm import (
     EFFORT_LEVELS,
     MAX_TOKENS,
-    SMALL_MODEL,
-    check_model_settings,
-    fallbacks_from_env,
-    resolve_fallbacks,
     NOT_JSON,
+    SMALL_MODEL,
     ModelCaller,
     add_usage,
     cache_marker,
+    check_model_settings,
     failure_message,
+    fallbacks_from_env,
     refusal_message,
+    resolve_fallbacks,
     stable_blocks,
     system_blocks,
     with_fallbacks,
@@ -60,8 +60,8 @@ from orchestration.state import (
     Reflection,
     WriteFileInput,
 )
-from resilience.classify import BUDGET_EXCEEDED, is_unavailable
 from orchestration.validation import first_problems, validate
+from resilience.classify import BUDGET_EXCEEDED, is_unavailable
 from tools import dispatch_tool, session_tool_definitions
 from tools.mcp_client import McpFileTools, McpUnavailableError
 from tools.python_exec import (

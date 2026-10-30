@@ -30,11 +30,11 @@ import signal
 import sys
 import threading
 import time
-from datetime import datetime, timezone
 from dataclasses import replace
+from datetime import datetime, timezone
 from functools import partial
 from pathlib import Path
-from typing import Callable
+from typing import Any, Callable
 
 from dotenv import load_dotenv
 from langgraph.graph import END, START, StateGraph
@@ -43,14 +43,19 @@ from agents.coder_agent import CoderAgent, CoderConfig, print_step_progress
 from agents.llm import add_usage, zero_usage
 from agents.pm_agent import MAX_TASKS, PMAgent, PMConfig, merge_tasks
 from agents.qa_agent import QAAgent, QAConfig
+from cost.ledger import RunBudget
+from cost.pricing import is_priced
+from cost.report import write_cost_report
 from messaging.a2a import (
     A2AError,
     Message,
-    Task as A2ATask,
     artifact_data,
     data_part,
     text_part,
     user_message,
+)
+from messaging.a2a import (
+    Task as A2ATask,
 )
 from messaging.broker import A2ABroker, A2AClient
 from messaging.endpoints import (
@@ -61,9 +66,6 @@ from messaging.endpoints import (
     REVIEW_SKILL,
     register_team_agents,
 )
-from cost.ledger import RunBudget
-from cost.pricing import is_priced
-from cost.report import write_cost_report
 from observability.events import progress_line, read_events, summarise
 from observability.redaction import Redactor
 from orchestration.checkpoint import (
@@ -804,7 +806,7 @@ def build_team_graph(
     clients: dict[str, A2AClient],
     services: RunServices | None = None,
     on_stage: StageCallback | None = None,
-):
+) -> Any:
     """Compile the team graph.
 
     pm -> (consolidate) -> dispatch <-> coder -> reflect -> qa -> (fix -> reflect -> qa)*
@@ -1330,7 +1332,9 @@ def install_signal_handlers(services: RunServices) -> Callable[[], None]:
             os._exit(128 + signum)
         services.request_stop(signum)
 
-    previous = {signum: signal.signal(signum, handle) for signum in (signal.SIGINT, signal.SIGTERM)}
+    previous = {
+        signum: signal.signal(signum, handle) for signum in (signal.SIGINT, signal.SIGTERM)
+    }
 
     def restore() -> None:
         for signum, handler in previous.items():

@@ -15,7 +15,6 @@ import httpx2
 
 from resilience.circuit import CircuitBreaker, CircuitSettings, DependencyGuard, GuardFailure
 from resilience.classify import classify, is_unavailable, retry_after_seconds
-from resilience.response_cache import ResponseCache
 from resilience.retry import RetryPolicy, backoff_delay
 from tests.fakes import scripted_claude as sc
 from tools.mcp_client import McpStartupError, McpUnavailableError

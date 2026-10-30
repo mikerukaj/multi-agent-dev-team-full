@@ -1,2 +1,9 @@
 -r requirements.txt
 coverage==7.16.2
+ruff==0.17.1
+pdoc==16.0.0
+# pdoc's dependencies, pinned so docs/api builds byte-for-byte the same everywhere.
+Jinja2==3.1.6
+MarkupSafe==3.0.4
+Pygments==2.21.0
+markdown2==2.5.5

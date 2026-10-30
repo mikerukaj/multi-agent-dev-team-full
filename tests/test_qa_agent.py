@@ -24,10 +24,10 @@ from agents.qa_agent import (
     normalise_findings,
     verdict_for,
 )
+from orchestration.services import RunServices
 from tests.fakes import assert_no_live_dependencies
 from tests.fakes import scripted_claude as sc
 from tests.schema_check import CONTRACT, FIXTURE, assert_matches_findings_schema, load_schema
-from orchestration.services import RunServices
 from tests.team_fakes import FakeFileTools, scripted_test_run
 from tools.mcp_client import McpUnavailableError
 
@@ -133,6 +133,10 @@ def failing_run(*test_ids: str) -> dict:
         )
     run["failed"] = len(test_ids)
     return run
+
+
+def setUpModule() -> None:
+    assert_no_live_dependencies()
 
 
 class FakeClient:

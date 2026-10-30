@@ -19,7 +19,8 @@ from pathlib import Path
 
 from cost.ledger import RunBudget, UsageLedger
 from cost.pricing import load_price_table, price_table_path
-from cost.report import DEFAULT_DIRECTORY as DEFAULT_COST_REPORT_DIR, cost_report_directory
+from cost.report import DEFAULT_DIRECTORY as DEFAULT_COST_REPORT_DIR
+from cost.report import cost_report_directory
 from observability.events import EventLog, severity_from_env
 from observability.redaction import Redactor
 from observability.tracing import Tracer
@@ -183,7 +184,7 @@ class RunServices:
         describe: Callable[[object], dict] | None = None,
         event: str = "tool_call",
         guard: DependencyGuard | None = None,
-    ):
+    ) -> object:
         """Run one tool call in its ``tool:<name>`` span and record it as an event.
 
         ``describe(result)`` gives the span outputs and event details (``is_error``,

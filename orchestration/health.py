@@ -67,6 +67,7 @@ def check_health(env: Mapping[str, str], coder_config, qa_config, pm_config) -> 
 
 
 def check_credentials(env: Mapping[str, str]) -> HealthItem:
+    """Whether an Anthropic API key or auth token is set in ``env``."""
     if env.get("ANTHROPIC_API_KEY") or env.get("ANTHROPIC_AUTH_TOKEN"):
         return HealthItem(name="credentials", status="ok", message="model credentials set")
     return HealthItem(name="credentials", status="missing",
@@ -74,6 +75,7 @@ def check_credentials(env: Mapping[str, str]) -> HealthItem:
 
 
 def check_docker() -> HealthItem:
+    """Whether the ``docker`` command exists and its engine answers."""
     if shutil.which("docker") is None:
         return HealthItem(name="docker", status="missing",
                           message="the docker command is not installed")
@@ -93,6 +95,7 @@ def check_docker() -> HealthItem:
 
 
 def check_sandbox_image(image: str) -> HealthItem:
+    """Whether ``image`` is present, or is the project image and can be built here."""
     if shutil.which("docker") is None:
         return HealthItem(name="sandbox_image", status="error",
                           message="cannot check the sandbox image without Docker")
@@ -108,6 +111,7 @@ def check_sandbox_image(image: str) -> HealthItem:
 
 
 def check_writable(name: str, folder: Path) -> HealthItem:
+    """Whether ``folder`` exists (creating it if needed) and a file can be written there."""
     try:
         Path(folder).mkdir(parents=True, exist_ok=True)
         with tempfile.NamedTemporaryFile(dir=folder, prefix=".health-"):
@@ -118,6 +122,7 @@ def check_writable(name: str, folder: Path) -> HealthItem:
 
 
 def check_chroma(coder_config) -> HealthItem:
+    """The Coder's memory store: the embedded folder is writable, or the server answers."""
     if not coder_config.chroma_host:
         item = check_writable("chroma", coder_config.chroma_path)
         if item["status"] == "ok":
@@ -153,6 +158,7 @@ def check_price_table(env: Mapping[str, str], models: list[str]) -> HealthItem:
 
 
 def check_langsmith(env: Mapping[str, str]) -> HealthItem:
+    """Whether LangSmith tracing is on; informational, it never blocks a run."""
     on = env.get("LANGSMITH_TRACING", "").lower() == "true" and env.get("LANGSMITH_API_KEY")
     message = "tracing on" if on else "tracing off (set LANGSMITH_TRACING and a key to enable)"
     return HealthItem(name="langsmith", status="info", message=message)

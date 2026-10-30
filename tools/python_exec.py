@@ -194,7 +194,9 @@ def _python_file(workspace: Path, path: str) -> Path:
     return target
 
 
-def run_container(command: list[str], name: str, timeout_seconds: float):
+def run_container(
+    command: list[str], name: str, timeout_seconds: float
+) -> subprocess.CompletedProcess:
     """Run one ``docker run`` command; a run past its time limit is killed.
 
     Returns a ``CompletedProcess`` with the raw output bytes, and ``returncode``
@@ -212,7 +214,7 @@ def run_container(command: list[str], name: str, timeout_seconds: float):
         return subprocess.CompletedProcess(command, None, stdout, stderr)
 
 
-def guarded_run(attempt, guard: DependencyGuard | None):
+def guarded_run(attempt, guard: DependencyGuard | None) -> object:
     """Run ``attempt`` through ``guard`` (when given), retrying Docker start failures."""
     if guard is None:
         return attempt()

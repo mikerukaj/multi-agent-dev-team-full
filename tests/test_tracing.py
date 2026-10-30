@@ -108,7 +108,6 @@ class SpanTreeTests(unittest.TestCase):
         self.assertIn(MARKER, self.recorder.text())
 
     def test_headers_continue_the_trace_on_another_thread(self) -> None:
-        seen = {}
         with self.tracer.root_span("run-1", {}):
             headers = self.tracer.headers()
 

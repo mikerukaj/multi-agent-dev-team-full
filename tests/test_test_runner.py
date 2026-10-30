@@ -8,8 +8,8 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from tools.python_exec import SANDBOX_IMAGE, ensure_sandbox
 from tools import test_runner
+from tools.python_exec import SANDBOX_IMAGE, ensure_sandbox
 from tools.test_runner import MAX_XML_BYTES, parse_junit, pytest_command, run_pytest
 
 requires_docker = unittest.skipUnless(shutil.which("docker"), "Docker is not available")

@@ -1,0 +1,17 @@
+# Style, import order and docstring checks (constitution: Python Standards, Principle I).
+target-version = "py312"
+line-length = 99  # The most PEP 8 allows by team agreement.
+extend-exclude = [".venv", "workspace", "docs/api", ".specify", ".claude", "specs"]
+
+[lint]
+select = ["E", "W", "F", "I", "D1", "ANN201"]
+ignore = ["D105", "D107"]
+
+[lint.per-file-ignores]
+"tests/**" = ["D", "ANN"]
+
+[lint.isort]
+known-first-party = [
+    "agents", "orchestration", "tools", "messaging", "cost", "resilience",
+    "observability", "benchmarks", "demo", "tests",
+]

@@ -4,9 +4,9 @@ See specs/002-qa-feedback-loop-mcp/contracts/coder-reflection.md.
 """
 
 import json
-from dataclasses import replace
 import tempfile
 import unittest
+from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
@@ -119,7 +119,8 @@ class ReflectionTestCase(unittest.TestCase):
         (self.workspace / "tests" / "test_calc.py").write_text("TEST_MARKER", encoding="utf-8")
         self.config = CoderConfig(workspace_root=root / "w", chroma_path=root / "c", max_steps=3)
         # Reflection runs no generated code here, so the Docker check is not needed.
-        for name, value in (("SemanticMemory", FakeMemory), ("ensure_sandbox", lambda image: None)):
+        patches = (("SemanticMemory", FakeMemory), ("ensure_sandbox", lambda image: None))
+        for name, value in patches:
             patcher = mock.patch.object(coder_agent, name, value)
             patcher.start()
             self.addCleanup(patcher.stop)

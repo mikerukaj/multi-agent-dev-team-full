@@ -13,7 +13,7 @@ set it on the broker threads, so a retry deep inside a tool call is still attrib
 
 import json
 import threading
-from collections.abc import Callable, Iterable, Mapping
+from collections.abc import Callable, Iterable, Iterator, Mapping
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
@@ -112,7 +112,7 @@ class EventLog:
         return self.emit(top.pop("event"), **top, **details)
 
     @contextmanager
-    def context(self, **fields):
+    def context(self, **fields) -> Iterator[None]:
         """Attribute events on this thread to ``agent``/``stage``/``iteration``/``task_id``."""
         stack = self._stack()
         stack.append({**(stack[-1] if stack else {}), **fields})

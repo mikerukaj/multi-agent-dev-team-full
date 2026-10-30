@@ -7,7 +7,6 @@ record, never an exception.
 
 import contextlib
 import tempfile
-import threading
 import time
 import unittest
 from pathlib import Path
@@ -28,7 +27,7 @@ from tests.fakes.team_script import (
     request_kind,
     scripted_team,
 )
-from tests.team_fakes import FakeFileTools, qa_result
+from tests.team_fakes import qa_result
 
 MODEL = "claude-sonnet-5-5"
 
