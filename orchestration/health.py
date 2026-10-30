@@ -1,9 +1,10 @@
 """Check everything a team run needs, without a model call (FR-231, research R17).
 
 ``python -m orchestration.health [--json]`` reports each item as ``ok``, ``missing``,
-``error`` or ``info``, with a message, and exits 0 when every item that isn't ``info``
-is ``ok`` (2 otherwise). ``orchestration.team`` runs the same checks before a run and
-refuses to start, naming every failing item, before any model call (US4 scenario 4).
+``error`` or ``info``, with a message that ends in the fix when an item fails, and exits
+0 when every item that isn't ``info`` is ``ok`` (2 otherwise). ``orchestration.team``
+runs the same checks before a run and refuses to start, naming every failing item,
+before any model call (US4 scenario 4).
 """
 
 import argparse
@@ -30,6 +31,7 @@ from orchestration.services import budget_from_env
 from tools.python_exec import SANDBOX_DIR, SANDBOX_IMAGE
 
 ItemStatus = Literal["ok", "missing", "error", "info"]
+REQUIRED_PYTHON = (3, 12)
 DOCKER_TIMEOUT_SECONDS = 10
 HEARTBEAT_TIMEOUT_SECONDS = 3
 
@@ -53,6 +55,7 @@ def check_health(env: Mapping[str, str], coder_config, qa_config, pm_config) -> 
     """Check every prerequisite of a run; never calls a model."""
     models = [pm_config.model, coder_config.model, qa_config.model]
     items = [
+        check_python(),
         check_credentials(env),
         check_docker(),
         check_sandbox_image(qa_config.sandbox_image),
@@ -64,6 +67,17 @@ def check_health(env: Mapping[str, str], coder_config, qa_config, pm_config) -> 
     ]
     ok = all(item["status"] in ("ok", "info") for item in items)
     return HealthReport(ok=ok, items=items)
+
+
+def check_python(version: tuple = tuple(sys.version_info[:2])) -> HealthItem:
+    """Whether this interpreter is the Python version the project and sandbox use."""
+    found = ".".join(map(str, version[:2]))
+    if tuple(version[:2]) == REQUIRED_PYTHON:
+        return HealthItem(name="python", status="ok", message=f"Python {found}")
+    wanted = ".".join(map(str, REQUIRED_PYTHON))
+    return HealthItem(name="python", status="error",
+                      message=f"Python {found} is running; use Python {wanted}: "
+                              f"python{wanted} -m venv .venv && source .venv/bin/activate")
 
 
 def check_credentials(env: Mapping[str, str]) -> HealthItem:
@@ -78,7 +92,8 @@ def check_docker() -> HealthItem:
     """Whether the ``docker`` command exists and its engine answers."""
     if shutil.which("docker") is None:
         return HealthItem(name="docker", status="missing",
-                          message="the docker command is not installed")
+                          message="the docker command is not installed; install Docker "
+                                  "(Docker Desktop on macOS) and open a new shell")
     try:
         result = subprocess.run(
             ["docker", "version", "--format", "{{.Server.Version}}"],
@@ -86,10 +101,13 @@ def check_docker() -> HealthItem:
         )
     except subprocess.TimeoutExpired:
         return HealthItem(name="docker", status="error",
-                          message="the Docker engine did not answer in time")
+                          message="the Docker engine did not answer in time; start Docker "
+                                  "and try again")
     if result.returncode != 0:
         return HealthItem(name="docker", status="error",
-                          message=f"the Docker engine is not reachable: {result.stderr.strip()}")
+                          message=f"the Docker engine is not reachable: {result.stderr.strip()}; "
+                                  "start Docker, or let your user run it (sudo usermod -aG "
+                                  "docker $USER, then log in again)")
     return HealthItem(name="docker", status="ok",
                       message=f"Docker {result.stdout.strip()} reachable")
 
@@ -98,7 +116,8 @@ def check_sandbox_image(image: str) -> HealthItem:
     """Whether ``image`` is present, or is the project image and can be built here."""
     if shutil.which("docker") is None:
         return HealthItem(name="sandbox_image", status="error",
-                          message="cannot check the sandbox image without Docker")
+                          message="cannot check the sandbox image without Docker; fix the "
+                                  "docker item first")
     inspect = subprocess.run(["docker", "image", "inspect", image], capture_output=True,
                              text=True, timeout=DOCKER_TIMEOUT_SECONDS, check=False)
     if inspect.returncode == 0:
@@ -107,7 +126,8 @@ def check_sandbox_image(image: str) -> HealthItem:
         return HealthItem(name="sandbox_image", status="ok",
                           message=f"{image} will be built from {SANDBOX_DIR}")
     return HealthItem(name="sandbox_image", status="missing",
-                      message=f"{image} is not present and cannot be built here")
+                      message=f"{image} is not present and cannot be built here; pull or "
+                              f"build it (docker build -t {image} <folder with its Dockerfile>)")
 
 
 def check_writable(name: str, folder: Path) -> HealthItem:
@@ -117,7 +137,9 @@ def check_writable(name: str, folder: Path) -> HealthItem:
         with tempfile.NamedTemporaryFile(dir=folder, prefix=".health-"):
             pass
     except OSError as error:
-        return HealthItem(name=name, status="error", message=f"{folder} is not writable: {error}")
+        return HealthItem(name=name, status="error",
+                          message=f"{folder} is not writable: {error}; make it writable or "
+                                  "point its setting at another folder (docs/CONFIGURATION.md)")
     return HealthItem(name=name, status="ok", message=f"{folder} is writable")
 
 
@@ -134,7 +156,8 @@ def check_chroma(coder_config) -> HealthItem:
             response.read()
     except (urllib.error.URLError, OSError) as error:
         return HealthItem(name="chroma", status="error",
-                          message=f"the Chroma server at {url} is not reachable: {error}")
+                          message=f"the Chroma server at {url} is not reachable: {error}; start "
+                                  "it (docker compose up chroma) or unset CHROMA_HOST")
     return HealthItem(name="chroma", status="ok", message=f"Chroma server at {url} healthy")
 
 

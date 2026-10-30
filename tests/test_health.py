@@ -13,7 +13,7 @@ from agents.coder_agent import CoderConfig
 from agents.pm_agent import PMConfig
 from agents.qa_agent import QAConfig
 from orchestration import health
-from orchestration.health import check_health, failing_items
+from orchestration.health import check_health, check_python, failing_items
 
 ENV = {"ANTHROPIC_API_KEY": "sk-ant-api03-healthtest000000000000"}
 
@@ -51,7 +51,7 @@ class HealthItemTests(HealthTestCase):
         report = self.report()
         self.assertTrue(report["ok"], failing_items(report))
         self.assertEqual([item["name"] for item in report["items"]],
-                         ["credentials", "docker", "sandbox_image", "workspace",
+                         ["python", "credentials", "docker", "sandbox_image", "workspace",
                           "cost_report_dir", "chroma", "price_table", "langsmith"])
         self.assertEqual(self.item(report, "langsmith")["status"], "info")
 
@@ -66,6 +66,28 @@ class HealthItemTests(HealthTestCase):
         report = self.report()
         self.assertEqual(self.item(report, "docker")["status"], "error")
         self.assertIn("Cannot connect", self.item(report, "docker")["message"])
+
+    def test_the_python_version_is_checked_and_its_fix_named(self) -> None:
+        self.assertEqual(check_python((3, 12))["status"], "ok")
+        wrong = check_python((3, 11))
+        self.assertEqual(wrong["status"], "error")
+        self.assertIn("use Python 3.12", wrong["message"])
+        self.assertIn("python3.12 -m venv .venv", wrong["message"])
+
+    def test_every_failing_item_names_its_fix(self) -> None:
+        self.docker.return_value = completed(1, "", "Cannot connect to the Docker daemon")
+        blocked = Path(self._tmp.name) / "file"
+        blocked.write_text("x", encoding="utf-8")
+        coder = CoderConfig(workspace_root=blocked / "w", chroma_path=blocked / "c",
+                            chroma_host="127.0.0.1", chroma_port=9)
+        qa = QAConfig(sandbox_image="someone/else:1")
+        report = check_health({}, coder, qa, PMConfig())
+        failing = [item for item in report["items"] if item["status"] in ("missing", "error")]
+        self.assertGreaterEqual(len(failing), 4)
+        fixes = ("set ", "start ", "use ", "install ", "fix ", "build", "make it writable")
+        for item in failing:
+            with self.subTest(item=item["name"]):
+                self.assertTrue(any(fix in item["message"] for fix in fixes), item["message"])
 
     def test_a_sandbox_image_that_is_missing_and_cannot_be_built(self) -> None:
         self.docker.return_value = completed(1, "", "No such image")
