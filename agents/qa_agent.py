@@ -924,7 +924,8 @@ def build_report(request: FinalReportRequest) -> QAReport:
 
 def _iteration_line(iteration: dict) -> str:
     run = iteration["test_run"]
-    blocking = sum(1 for finding in iteration["findings"] if finding["severity"] == "blocking")
+    blocking = sum(1 for finding in iteration["findings"]
+                   if finding["severity"] == "blocking" and _active(finding))
     return (
         f"#{iteration['number']}: {run['passed']} passed, {run['failed'] + run['errors']} "
         f"failed, {blocking} blocking"

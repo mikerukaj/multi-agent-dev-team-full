@@ -663,6 +663,22 @@ class FinalReportTests(QATestCase):
             self.assertIn(text, markdown)
         self.assertEqual(FakeFileTools.sessions[-1].calls[0][0], "write_file")
 
+    def test_the_iteration_line_counts_only_findings_still_blocking(self) -> None:
+        """A finding fixed by the time of a passing review is not counted as blocking."""
+        request = self.request(status="completed", end_reason="complete")
+        first = request["iterations"][0]
+        fixed = {**first["findings"][0], "state": "fixed"}
+        request["iterations"].append({
+            **first, "number": 2, "test_run": scripted_test_run(), "findings": [fixed],
+            "verdict": "complete", "review_task_id": "t2",
+        })
+        agent = QAAgent(QAConfig(), client=FakeClient([]), run_tests=FakeRunner([{}]),
+                        file_tools=FakeFileTools)
+        agent.final_report(request)
+        markdown = (self.workspace / ".qa" / "report.md").read_text(encoding="utf-8")
+        self.assertIn("#1: 1 passed, 1 failed, 1 blocking", markdown)
+        self.assertIn("#2: 1 passed, 0 failed, 0 blocking", markdown)
+
     def test_secrets_in_the_report_are_redacted(self) -> None:
         secret = "sk-ant-api03-reportsecret0123456789"
         services = RunServices.create(env={"MY_API_KEY": "plantedvalue123"}, response_cache=None)
