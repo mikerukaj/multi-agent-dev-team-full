@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "requirements": [
+    {
+      "id": "slugify-cli",
+      "title": "Slugify CLI",
+      "kind": "cli",
+      "requirement": "A command-line tool slugify.py that joins its arguments into a URL slug: lowercase ASCII letters and digits, words separated by single hyphens, punctuation and accents dropped. With no arguments, it prints a usage line to stderr and exits with code 2."
+    },
+    {
+      "id": "isbn-check",
+      "title": "ISBN validator",
+      "kind": "library",
+      "requirement": "A library isbn.py with is_valid_isbn10(s) and is_valid_isbn13(s) that accept digits with optional hyphens and verify the checksum (X is allowed only as the last ISBN-10 digit). Any other input returns False instead of raising."
+    },
+    {
+      "id": "lru-cache",
+      "title": "LRU cache",
+      "kind": "stateful",
+      "requirement": "A library lru.py with an LRUCache(capacity) class offering get(key, default=None) and put(key, value). Putting a new key into a full cache evicts the least recently used key, get counts as a use, and a capacity below 1 raises ValueError."
+    }
+  ]
+}
