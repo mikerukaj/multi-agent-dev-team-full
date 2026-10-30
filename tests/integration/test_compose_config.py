@@ -2,6 +2,9 @@
 
 The Dockerfile checks need no Docker. The Compose checks read
 ``docker compose config --format json`` and skip, with a reason, without Docker Compose.
+The Compose file is resolved in a temporary folder with a ``.env`` made from
+``.env.example``, so the developer's own ``.env`` (which holds real secrets) never changes
+the result or reaches the output (FR-013).
 """
 
 import json
@@ -9,6 +12,7 @@ import os
 import re
 import shutil
 import subprocess
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -22,6 +26,35 @@ def compose_available() -> bool:
         return False
     probe = subprocess.run(["docker", "compose", "version"], capture_output=True, check=False)
     return probe.returncode == 0
+
+
+def isolated_env_file(overrides: dict[str, str]) -> str:
+    """``.env.example`` with ``overrides`` applied: the run-time file Compose reads."""
+    lines = []
+    for line in (REPO_ROOT / ".env.example").read_text(encoding="utf-8").splitlines():
+        key = line.split("=", 1)[0]
+        lines.append(f"{key}={overrides[key]}" if key in overrides else line)
+    return "\n".join(lines) + "\n"
+
+
+def resolve_compose(env_text: str) -> dict:
+    """The resolved Compose services, read in a temporary folder holding ``env_text``."""
+    env = {**os.environ, "PWD": str(REPO_ROOT)}
+    with tempfile.TemporaryDirectory() as folder:
+        shutil.copy(REPO_ROOT / "docker-compose.yml", folder)
+        (Path(folder) / ".env").write_text(env_text, encoding="utf-8")
+        result = subprocess.run(
+            ["docker", "compose", "config", "--format", "json"], cwd=folder, env=env,
+            capture_output=True, text=True, check=True,
+        )
+    return json.loads(result.stdout)["services"]
+
+
+def secret_settings(services: dict) -> list[str]:
+    """``<service> sets <KEY>`` for every non-empty secret-named setting; never the value."""
+    return [f"{name} sets {key}" for name, service in services.items()
+            for key, value in (service.get("environment") or {}).items()
+            if SECRET_NAME.search(key) and value]
 
 
 class DockerfileTests(unittest.TestCase):
@@ -56,24 +89,11 @@ class DockerfileTests(unittest.TestCase):
 
 @unittest.skipUnless(compose_available(), "Docker Compose is not available")
 class ComposeConfigTests(unittest.TestCase):
+    IDS = {"HOST_UID": "1000", "HOST_GID": "1000", "DOCKER_GID": "999"}
+
     @classmethod
     def setUpClass(cls) -> None:
-        env = {**os.environ, "HOST_UID": "1000", "HOST_GID": "1000", "DOCKER_GID": "999",
-               "PWD": str(REPO_ROOT)}
-        env_file = REPO_ROOT / ".env"
-        created = not env_file.exists()
-        if created:
-            env_file.write_text("", encoding="utf-8")
-        try:
-            result = subprocess.run(
-                ["docker", "compose", "config", "--format", "json"], cwd=REPO_ROOT, env=env,
-                capture_output=True, text=True, check=True,
-            )
-        finally:
-            if created:
-                env_file.unlink()
-        cls.config = json.loads(result.stdout)
-        cls.services = cls.config["services"]
+        cls.services = resolve_compose(isolated_env_file(cls.IDS))
 
     def test_the_agent_waits_for_a_healthy_chroma(self) -> None:
         self.assertEqual(self.services["agent"]["depends_on"]["chroma"]["condition"],
@@ -86,10 +106,14 @@ class ComposeConfigTests(unittest.TestCase):
             self.assertEqual(SOCKET in sources, name == "agent", name)
 
     def test_no_secret_is_set_in_any_environment(self) -> None:
-        for name, service in self.services.items():
-            for key, value in (service.get("environment") or {}).items():
-                if SECRET_NAME.search(key):
-                    self.assertFalse(value, f"{name} sets {key}")
+        self.assertEqual(secret_settings(self.services), [])
+
+    def test_a_planted_secret_is_reported_by_name_never_by_value(self) -> None:
+        planted = "sk-ant-test-PLANTED0000"
+        services = resolve_compose(isolated_env_file({**self.IDS, "ANTHROPIC_API_KEY": planted}))
+        messages = secret_settings(services)
+        self.assertIn("agent sets ANTHROPIC_API_KEY", messages)
+        self.assertNotIn(planted, "\n".join(messages))
 
     def test_pulled_images_are_pinned_and_nothing_is_published(self) -> None:
         self.assertIn("@sha256:", self.services["chroma"]["image"])
