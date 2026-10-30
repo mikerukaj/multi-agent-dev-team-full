@@ -28,7 +28,7 @@ from tests.fakes import scripted_claude as sc
 from tests.fakes.local_sandbox import local_exec_python
 from tests.team_fakes import FakeFileTools, token_usage
 from tools.mcp_client import McpUnavailableError
-from tools.python_exec import SandboxUnavailableError
+from tools.python_exec import ExecutionResult, SandboxUnavailableError
 
 # The loop tests run their fixture scripts with a local stand-in for the sandbox, so they
 # need no Docker; tests/integration/test_coder_sandbox.py runs the same classes with the
@@ -167,6 +167,50 @@ def happy_path_script() -> list:
         ),
         response([text_block("Done.")], "end_turn"),
     ]
+
+
+class RecordingRunner:
+    """A stand-in for ``exec_python``: records each call and reports a clean run."""
+
+    def __init__(self) -> None:
+        self.calls: list[tuple] = []
+
+    def __call__(self, workspace, path, timeout_seconds, image=None, guard=None, run_id=""):
+        self.calls.append((path, timeout_seconds))
+        return ExecutionResult(path, 0, "hi\n", "", False, 0.01)
+
+
+class RecordingMemory(FakeMemory):
+    """A ``FakeMemory`` that remembers the arguments it was built with."""
+
+    built_with: list[tuple] = []
+
+    def __init__(self, path, collection="coder_memory", guard=None, host=None, port=8000):
+        RecordingMemory.built_with.append((path, host, port))
+
+
+class InjectionSeamTests(AgentTestCase):
+    """``memory_factory`` and ``run_code`` replace Chroma and Docker (the offline demo)."""
+
+    def test_injected_runner_and_memory_need_no_docker_or_chroma(self) -> None:
+        RecordingMemory.built_with = []
+        runner = RecordingRunner()
+        no_docker = SandboxUnavailableError("Docker must not be needed")
+        with mock.patch.object(coder_agent, "ensure_sandbox", side_effect=no_docker):
+            agent = self.make_agent(FakeClient(happy_path_script()),
+                                    memory_factory=RecordingMemory, run_code=runner)
+        result = agent.run("Write main.py that prints hi")
+        self.assertEqual(result.status, "completed")
+        self.assertIn(("main.py", self.config.exec_timeout_seconds), runner.calls)
+        self.assertEqual(result.execution_result.stdout, "hi\n")
+        self.assertEqual(RecordingMemory.built_with,
+                         [(self.config.chroma_path, self.config.chroma_host,
+                           self.config.chroma_port)])
+
+    def test_the_defaults_still_check_the_sandbox_once(self) -> None:
+        with mock.patch.object(coder_agent, "ensure_sandbox") as ensure:
+            self.make_agent(FakeClient(happy_path_script()))
+        ensure.assert_called_once_with(self.config.sandbox_image)
 
 
 class HappyPathTests(AgentTestCase):

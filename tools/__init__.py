@@ -52,6 +52,7 @@ def dispatch_tool(
     file_tools=None,
     guard=None,
     run_id: str = "",
+    run_code=None,
 ) -> tuple[str, bool, ExecutionResult | None]:
     """Run the named tool and describe the outcome for the model.
 
@@ -62,6 +63,8 @@ def dispatch_tool(
     and propagates to the caller. ``guard`` (the sandbox's) and ``run_id`` are
     passed to ``exec_python``; a sandbox it gives up on comes back as the
     ``DependencyFailure`` JSON with ``is_error`` set, so the session goes on.
+    ``run_code`` runs the program: ``exec_python`` (the sandbox) by default, or another
+    runner with the same signature (the offline demo's simulator).
     """
     if name in FILE_TOOL_NAMES:
         if file_tools is None:
@@ -70,7 +73,7 @@ def dispatch_tool(
         return (*file_tools.call(name, arguments), None)
     try:
         if name == "exec_python":
-            result = exec_python(
+            result = (run_code or exec_python)(
                 workspace, tool_input["path"], timeout_seconds, image, guard, run_id
             )
             if result.failure:

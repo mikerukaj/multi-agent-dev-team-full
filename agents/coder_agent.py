@@ -370,9 +370,13 @@ def build_request(
 class CoderAgent:
     """A Coder Agent whose short-term memory lasts across ``run`` calls.
 
+    ``memory_factory`` builds the long-term memory (``SemanticMemory`` by default), and
+    ``run_code`` runs generated programs (``exec_python``, the Docker sandbox, by
+    default). Each is called with the same arguments as the default it replaces.
+
     Raises:
         SandboxUnavailableError: on construction, if Docker cannot run the sandbox
-            that all generated code executes in.
+            that all generated code executes in (only when ``run_code`` is the default).
     """
 
     def __init__(
@@ -382,19 +386,26 @@ class CoderAgent:
         on_step: Callable[[Step], None] | None = None,
         file_tools=McpFileTools,
         services: RunServices | None = None,
+        *,
+        memory_factory=None,
+        run_code=None,
     ) -> None:
         self.config = config or CoderConfig.from_env()
         self._file_tools_factory = file_tools
         self._session = None
         self._tools: list[dict] = []
-        ensure_sandbox(self.config.sandbox_image)
+        # Both default to the real sandbox and Chroma store. The offline demo injects
+        # stand-ins with the same signatures, and then no Docker is needed.
+        self._run_code = run_code or exec_python
+        if run_code is None:
+            ensure_sandbox(self.config.sandbox_image)
         # The SDK's own retries are off: the run's dependency guard retries (research R3).
         self._client = client or anthropic.Anthropic(max_retries=0)
         self._services = services or RunServices.create()
         self._caller = ModelCaller("coder", self._client, self._services)
         self._on_step = on_step
         self._window = SlidingWindowBuffer(self.config.window_turns)
-        self._memory = SemanticMemory(
+        self._memory = (memory_factory or SemanticMemory)(
             self.config.chroma_path, guard=self._memory_guard(),
             host=self.config.chroma_host, port=self.config.chroma_port,
         )
@@ -671,7 +682,7 @@ class CoderAgent:
             lambda: dispatch_tool(
                 block.name, block.input, workspace, self.config.exec_timeout_seconds,
                 self.config.sandbox_image, file_tools=self._session, guard=guard,
-                run_id=self._services.run_id,
+                run_id=self._services.run_id, run_code=self._run_code,
             ),
             describe=_describe_tool_result, event="sandbox_run" if sandbox else "tool_call",
             guard=guard,
@@ -756,7 +767,7 @@ class CoderAgent:
         if last and os.path.normpath(last.path) == os.path.normpath(main_file):
             return last
         try:
-            result = exec_python(
+            result = self._run_code(
                 workspace, main_file, self.config.exec_timeout_seconds,
                 self.config.sandbox_image, self._sandbox_guard(), self._services.run_id,
             )
